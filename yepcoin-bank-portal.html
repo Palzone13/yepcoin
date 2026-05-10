@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yepcoin Bank — Secure Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0a2342;
+  --navy-mid: #123a6b;
+  --blue: #1a5ca8;
+  --gold: #b8973a;
+  --gold-light: #d4af5a;
+  --bg: #f5f4f0;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: #ddd9d0;
+  --error: #c0392b;
+  --success: #16a34a;
+  --surface: #fafaf8;
+}
+html, body { height: 100%; }
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── PAGE SYSTEM ── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: flex; flex-direction: column; }
+
+/* ── SHARED NAV ── */
+.portal-nav {
+  background: var(--navy);
+  padding: 0 48px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo-mark {
+  width: 34px; height: 34px;
+  background: var(--gold);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700; color: var(--navy);
+}
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; font-weight: 600; color: #fff;
+}
+.logo-sub { font-size: 9px; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); display: block; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-link {
+  color: rgba(255,255,255,0.6); font-size: 13px;
+  text-decoration: none; transition: color 0.2s; cursor: pointer;
+  background: none; border: none; font-family: inherit;
+}
+.nav-link:hover { color: #fff; }
+.nav-badge {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 2px;
+}
+
+/* ── FORM LAYOUT ── */
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  background: var(--bg);
+}
+.auth-left {
+  flex: 1;
+  background: var(--navy);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 60px;
+  position: relative; overflow: hidden;
+}
+.auth-left-geo {
+  position: absolute; inset: 0; opacity: 0.05;
+}
+.auth-left-geo svg { width: 100%; height: 100%; }
+.auth-left-content { position: relative; z-index: 1; }
+.auth-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 600; color: #fff;
+  line-height: 1.15; margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.auth-left h2 em { color: var(--gold-light); font-style: normal; }
+.auth-left p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 360px; margin-bottom: 40px; }
+.auth-features { display: flex; flex-direction: column; gap: 16px; }
+.auth-feature { display: flex; align-items: center; gap: 12px; }
+.auth-feature-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0;
+}
+.auth-feature span { font-size: 14px; color: rgba(255,255,255,0.65); }
+
+.auth-right {
+  width: 480px; flex-shrink: 0;
+  background: var(--white);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 60px 52px;
+  border-left: 1px solid var(--border);
+}
+
+.form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 600; color: var(--navy);
+  margin-bottom: 6px; letter-spacing: -0.02em;
+}
+.form-subtitle {
+  font-size: 14px; color: var(--muted); margin-bottom: 36px; line-height: 1.5;
+}
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--navy); margin-bottom: 7px;
+}
+.form-input {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px; color: var(--text);
+  background: var(--surface);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(10,35,66,0.08);
+}
+.form-input.error { border-color: var(--error); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.form-btn {
+  width: 100%; padding: 14px;
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 3px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; margin-top: 8px;
+  transition: background 0.2s;
+}
+.form-btn:hover { background: var(--navy-mid); }
+.form-btn:active { transform: scale(0.99); }
+
+.form-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 24px 0; color: var(--border);
+}
+.form-divider::before, .form-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.form-divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+.form-switch {
+  text-align: center; margin-top: 20px;
+  font-size: 14px; color: var(--muted);
+}
+.form-switch-link {
+  color: var(--blue); font-weight: 600;
+  text-decoration: none; cursor: pointer; background: none; border: none;
+  font-family: inherit; font-size: inherit;
+}
+.form-switch-link:hover { text-decoration: underline; }
+
+.alert {
+  padding: 12px 14px; border-radius: 3px;
+  font-size: 13px; margin-bottom: 20px; display: none;
+}
+.alert.error { background: #fef2f2; border: 1px solid #fecaca; color: var(--error); }
+.alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
+.alert.show { display: block; }
+
+.form-hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+.fdic-strip {
+  background: var(--navy);
+  border-top: 2px solid var(--gold);
+  padding: 10px 48px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.fdic-badge {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.15em; padding: 3px 7px; border-radius: 2px;
+}
+.fdic-strip span { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── ADMIN PAGE ── */
+#adminPage {
+  background: #f0f2f5;
+}
+.admin-layout { display: flex; flex: 1; overflow: hidden; }
+
+.admin-sidebar {
+  width: 240px; background: var(--navy); flex-shrink: 0;
+  display: flex; flex-direction: column;
+  padding: 24px 0;
+}
+.sidebar-section { margin-bottom: 8px; }
+.sidebar-label {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); padding: 0 20px; margin-bottom: 4px; font-weight: 600;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; cursor: pointer;
+  color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+  border: none; background: none; width: 100%; text-align: left;
+  font-family: inherit;
+}
+.sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.sidebar-item.active { background: rgba(255,255,255,0.1); color: #fff; border-right: 3px solid var(--gold); }
+.sidebar-icon { font-size: 16px; width: 20px; text-align: center; }
+.sidebar-spacer { flex: 1; }
+.sidebar-user {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--navy); flex-shrink: 0;
+}
+.sidebar-user-name { font-size: 13px; color: #fff; font-weight: 600; }
+.sidebar-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+.admin-main { flex: 1; overflow-y: auto; padding: 32px 36px; }
+.admin-header { margin-bottom: 32px; }
+.admin-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 600; color: var(--navy);
+  letter-spacing: -0.02em;
+}
+.admin-header p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.admin-breadcrumb {
+  font-size: 12px; color: var(--muted); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.admin-breadcrumb span { color: var(--navy); font-weight: 500; }
+
+/* Stats cards */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; padding: 24px 20px;
+}
+.stat-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.stat-card-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px; font-weight: 700; color: var(--navy);
+  letter-spacing: -0.02em; line-height: 1;
+}
+.stat-card-sub { font-size: 12px; color: var(--success); margin-top: 6px; }
+.stat-card-sub.down { color: var(--error); }
+
+/* Tables */
+.admin-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; margin-bottom: 24px; overflow: hidden;
+}
+.admin-card-header {
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.admin-card-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+.admin-card-action {
+  font-size: 12px; font-weight: 600; color: var(--blue);
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  letter-spacing: 0.03em;
+}
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 10px 24px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+td { padding: 14px 24px; font-size: 14px; border-bottom: 1px solid #f0ede8; color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafaf8; }
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+}
+.badge-active { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+.badge-pending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.badge-suspended { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
+.badge-admin { background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; }
+.table-action {
+  background: none; border: none; cursor: pointer;
+  color: var(--blue); font-size: 12px; font-weight: 600;
+  font-family: inherit; padding: 4px 8px; border-radius: 3px;
+  transition: background 0.15s;
+}
+.table-action:hover { background: #eff6ff; }
+.table-action.danger { color: var(--error); }
+.table-action.danger:hover { background: #fef2f2; }
+
+/* Admin panel tabs */
+.admin-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+.admin-tab {
+  padding: 10px 20px; font-size: 14px; font-weight: 600;
+  color: var(--muted); cursor: pointer; border: none; background: none;
+  font-family: inherit; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: color 0.15s;
+}
+.admin-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+
+/* Transactions */
+.tx-amount { font-weight: 600; font-family: 'Playfair Display', serif; }
+.tx-credit { color: var(--success); }
+.tx-debit { color: var(--text); }
+
+/* Search bar */
+.admin-search {
+  display: flex; gap: 12px; margin-bottom: 16px; align-items: center;
+}
+.admin-search input {
+  flex: 1; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 3px;
+  font-family: inherit; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.admin-search input:focus { border-color: var(--navy); }
+.admin-search-btn {
+  padding: 9px 18px; background: var(--navy); color: #fff;
+  border: none; border-radius: 3px; font-family: inherit;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--white); border-radius: 6px;
+  width: 460px; padding: 36px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--navy); margin-bottom: 6px;
+}
+.modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.modal-btns { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+.modal-btn {
+  padding: 10px 20px; border-radius: 3px; font-family: inherit;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  letter-spacing: 0.03em;
+}
+.modal-btn-cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+.modal-btn-confirm { background: var(--navy); color: #fff; }
+.modal-btn-danger { background: var(--error); color: #fff; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--navy); color: #fff;
+  padding: 14px 20px; border-radius: 6px;
+  font-size: 14px; font-weight: 500;
+  display: none; align-items: center; gap: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  z-index: 2000; animation: slideIn 0.3s ease;
+}
+.toast.show { display: flex; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--error); }
+@keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+@media (max-width: 860px) {
+  .auth-left { display: none; }
+  .auth-right { width: 100%; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .admin-sidebar { width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     LOGIN PAGE
+════════════════════════════════════ -->
+<div class="page active" id="loginPage">
+  <nav class="portal-nav">
+    <div class="nav-logo" onclick="showPage('loginPage')">
+      <div class="logo-mark">Y</div>
+      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Secure Portal</span></div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-badge">256-bit SSL</span>
+      <button class="nav-link" onclick="window.location.href='yepcoin-bank.html'">← Back to Site</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-left-geo">
+        <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
+          <circle cx="500" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="500" cy="350" r="250" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="500" cy="350" r="150" fill="none" stroke="white" stroke-width="1"/>
+          <line x1="0" y1="0" x2="600" y2="700" stroke="white" stroke-width="1"/>
+          <line x1="100" y1="0" x2="700" y2="700" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="auth-left-content">
+        <h2>Welcome back to <em>Yepcoin Bank.</em></h2>
+        <p>Access your accounts, manage transfers, and stay in control of your finances — all in one secure place.</p>
+        <div class="auth-features">
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Real-time account monitoring</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Instant transfers and payments</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>FDIC insured up to $250,000</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Bank-grade 256-bit encryption</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="form-title">Sign In</div>
+      <div class="form-subtitle">Enter your credentials to access your account.</div>
+
+      <div class="alert error" id="loginError">Invalid email or password. Please try again.</div>
+      <div class="alert success" id="loginSuccess">Login successful! Redirecting...</div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;">
+          <input type="checkbox" style="accent-color:var(--navy);"> Remember me
+        </label>
+        <button class="form-switch-link" style="font-size:13px;">Forgot password?</button>
+      </div>
+
+      <button class="form-btn" onclick="handleLogin()">Sign In to My Account</button>
+
+      <div class="form-divider"><span>or</span></div>
+
+      <div class="form-switch">
+        Don't have an account?
+        <button class="form-switch-link" onclick="showPage('registerPage')">Open an account →</button>
+      </div>
+
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.6;">
+        🔒 Your connection is encrypted and secured. Yepcoin Bank will never ask for your password via email or phone.
+      </div>
+    </div>
+  </div>
+
+  <div class="fdic-strip">
+    <span class="fdic-badge">FDIC</span>
+    <span>Member FDIC. Deposits insured up to $250,000. © 2026 Yepcoin Bank, N.A.</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     REGISTER PAGE
+════════════════════════════════════ -->
+<div class="page" id="registerPage">
+  <nav class="portal-nav">
+    <div class="nav-logo" onclick="showPage('loginPage')">
+      <div class="logo-mark">Y</div>
+      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Open an Account</span></div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-badge">256-bit SSL</span>
+      <button class="nav-link" onclick="showPage('loginPage')">Already have an account? Sign in</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-left-geo">
+        <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
+          <circle cx="100" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="100" cy="350" r="250" fill="none" stroke="white" stroke-width="1"/>
+          <circle cx="100" cy="350" r="150" fill="none" stroke="white" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="auth-left-content">
+        <h2>Start banking with <em>confidence.</em></h2>
+        <p>Open your Yepcoin Bank account in minutes. No hidden fees, no minimum balance, and no nonsense.</p>
+        <div class="auth-features">
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Free checking with no monthly fees</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>High-yield savings at 4.85% APY</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Access to 40,000+ fee-free ATMs</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Instant mobile app access</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right" style="overflow-y:auto;padding-top:40px;padding-bottom:40px;">
+      <div class="form-title">Open an Account</div>
+      <div class="form-subtitle">Takes less than 5 minutes. No credit check required.</div>
+
+      <div class="alert error" id="registerError"></div>
+      <div class="alert success" id="registerSuccess">Account created! Please sign in.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" id="regFirst" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" id="regLast" placeholder="Smith">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="regEmail" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-input" type="tel" id="regPhone" placeholder="(555) 000-0000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date of Birth</label>
+        <input class="form-input" type="date" id="regDob">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Create Password</label>
+        <input class="form-input" type="password" id="regPassword" placeholder="Min. 8 characters">
+        <div class="form-hint">Must be at least 8 characters with one number.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input class="form-input" type="password" id="regConfirm" placeholder="Repeat password">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Account Type</label>
+        <select class="form-input" id="regType">
+          <option value="checking">Free Checking</option>
+          <option value="savings">High-Yield Savings</option>
+          <option value="both">Checking + Savings Bundle</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;line-height:1.5;">
+          <input type="checkbox" id="regTerms" style="accent-color:var(--navy);margin-top:3px;flex-shrink:0;">
+          I agree to Yepcoin Bank's <a href="#" style="color:var(--blue);">Terms of Service</a> and <a href="#" style="color:var(--blue);">Privacy Policy</a>. I confirm I am at least 18 years old.
+        </label>
+      </div>
+
+      <button class="form-btn" onclick="handleRegister()">Create My Account</button>
+
+      <div class="form-switch" style="margin-top:16px;">
+        Already have an account?
+        <button class="form-switch-link" onclick="showPage('loginPage')">Sign in →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fdic-strip">
+    <span class="fdic-badge">FDIC</span>
+    <span>Member FDIC. Deposits insured up to $250,000. © 2026 Yepcoin Bank, N.A. Equal Housing Lender.</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     ADMIN PAGE
+════════════════════════════════════ -->
+<div class="page" id="adminPage" style="flex-direction:column;">
+  <nav class="portal-nav">
+    <div class="nav-logo">
+      <div class="logo-mark">Y</div>
+      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Admin Console</span></div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-badge">Admin Access</span>
+      <button class="nav-link" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="admin-layout" style="flex:1;">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Overview</div>
+        <button class="sidebar-item active" onclick="setTab(this,'overview')">
+          <span class="sidebar-icon">📊</span> Dashboard
+        </button>
+        <button class="sidebar-item" onclick="setTab(this,'users')">
+          <span class="sidebar-icon">👥</span> Customers
+        </button>
+        <button class="sidebar-item" onclick="setTab(this,'transactions')">
+          <span class="sidebar-icon">💳</span> Transactions
+        </button>
+        <button class="sidebar-item" onclick="setTab(this,'accounts')">
+          <span class="sidebar-icon">🏦</span> Accounts
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Management</div>
+        <button class="sidebar-item" onclick="setTab(this,'loans')">
+          <span class="sidebar-icon">📋</span> Loan Applications
+        </button>
+        <button class="sidebar-item" onclick="setTab(this,'flags')">
+          <span class="sidebar-icon">🚩</span> Flagged Activity
+        </button>
+        <button class="sidebar-item" onclick="setTab(this,'settings')">
+          <span class="sidebar-icon">⚙️</span> Settings
+        </button>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">AD</div>
+        <div>
+          <div class="sidebar-user-name">Admin</div>
+          <div class="sidebar-user-role">Super Administrator</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="admin-main">
+
+      <!-- DASHBOARD TAB -->
+      <div class="admin-tab-content active" id="tab-overview">
+        <div class="admin-breadcrumb">Admin Console <span>→ Dashboard</span></div>
+        <div class="admin-header">
+          <h1>Dashboard</h1>
+          <p>Welcome back. Here's what's happening at Yepcoin Bank today.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-label">Total Customers</div>
+            <div class="stat-card-val" id="statCustomers">0</div>
+            <div class="stat-card-sub" id="statCustomersSub">No customers yet</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Total Deposits</div>
+            <div class="stat-card-val">$0.00</div>
+            <div class="stat-card-sub">No deposits yet</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Transactions Today</div>
+            <div class="stat-card-val">0</div>
+            <div class="stat-card-sub">No transactions yet</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-label">Flagged Activity</div>
+            <div class="stat-card-val">0</div>
+            <div class="stat-card-sub">Nothing to review</div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">Recent Registrations</div>
+            <button class="admin-card-action" onclick="setTabByName('users')">View all →</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Account Type</th><th>Status</th><th>Joined</th></tr>
+            </thead>
+            <tbody id="recentRegistrations"></tbody>
+          </table>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">Recent Transactions</div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+            </thead>
+            <tbody id="dashTxBody">
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">No transactions yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS TAB -->
+      <div class="admin-tab-content" id="tab-users">
+        <div class="admin-breadcrumb">Admin Console <span>→ Customers</span></div>
+        <div class="admin-header">
+          <h1>Customer Management</h1>
+          <p>View, edit, and manage all registered bank customers.</p>
+        </div>
+        <div class="admin-search">
+          <input type="text" placeholder="Search by name or email..." id="userSearch" oninput="filterUsers()">
+          <button class="admin-search-btn" onclick="filterUsers()">Search</button>
+          <button class="admin-search-btn" style="background:var(--success);" onclick="showAddUserModal()">+ Add Customer</button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">All Customers</div>
+            <div style="font-size:13px;color:var(--muted);" id="userCount"></div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Account Type</th><th>Balance</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS TAB -->
+      <div class="admin-tab-content" id="tab-transactions">
+        <div class="admin-breadcrumb">Admin Console <span>→ Transactions</span></div>
+        <div class="admin-header">
+          <h1>Transaction Ledger</h1>
+          <p>Full audit trail of all bank transactions.</p>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header"><div class="admin-card-title">All Transactions</div></div>
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;">No transactions recorded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ACCOUNTS TAB -->
+      <div class="admin-tab-content" id="tab-accounts">
+        <div class="admin-breadcrumb">Admin Console <span>→ Accounts</span></div>
+        <div class="admin-header"><h1>Bank Accounts</h1><p>All active checking and savings accounts.</p></div>
+        <div class="admin-card">
+          <div class="admin-card-header"><div class="admin-card-title">Account Registry</div></div>
+          <table>
+            <thead><tr><th>Account #</th><th>Customer</th><th>Type</th><th>Balance</th><th>Opened</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No accounts opened yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LOANS TAB -->
+      <div class="admin-tab-content" id="tab-loans">
+        <div class="admin-breadcrumb">Admin Console <span>→ Loan Applications</span></div>
+        <div class="admin-header"><h1>Loan Applications</h1><p>Review and action pending loan requests.</p></div>
+        <div class="admin-card">
+          <div class="admin-card-header"><div class="admin-card-title">Pending Applications</div></div>
+          <table>
+            <thead><tr><th>Applicant</th><th>Type</th><th>Amount</th><th>Credit Score</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No loan applications yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FLAGS TAB -->
+      <div class="admin-tab-content" id="tab-flags">
+        <div class="admin-breadcrumb">Admin Console <span>→ Flagged Activity</span></div>
+        <div class="admin-header"><h1>Flagged Activity</h1><p>Suspicious transactions requiring review.</p></div>
+        <div class="admin-card">
+          <div class="admin-card-header"><div class="admin-card-title">Active Flags</div></div>
+          <table>
+            <thead><tr><th>Flag ID</th><th>Customer</th><th>Reason</th><th>Amount</th><th>Risk</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No flagged activity.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="admin-tab-content" id="tab-settings">
+        <div class="admin-breadcrumb">Admin Console <span>→ Settings</span></div>
+        <div class="admin-header"><h1>System Settings</h1><p>Configure bank-wide settings and admin preferences.</p></div>
+        <div class="admin-card" style="padding:32px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div class="form-group"><label class="form-label">Bank Name</label><input class="form-input" placeholder="e.g. Yepcoin Bank, N.A."></div>
+            <div class="form-group"><label class="form-label">Routing Number</label><input class="form-input" type="password" placeholder="Enter routing number"></div>
+            <div class="form-group"><label class="form-label">Savings APY (%)</label><input class="form-input" placeholder="e.g. 4.85"></div>
+            <div class="form-group"><label class="form-label">CD Rate (%)</label><input class="form-input" placeholder="e.g. 5.10"></div>
+            <div class="form-group"><label class="form-label">Max Transfer Limit ($)</label><input class="form-input" placeholder="e.g. 50000"></div>
+            <div class="form-group"><label class="form-label">Flag Threshold ($)</label><input class="form-input" placeholder="e.g. 9000"></div>
+          </div>
+          <button class="form-btn" style="width:auto;padding:12px 32px;margin-top:8px;" onclick="showToast('Settings saved.','success')">Save Settings</button>
+        </div>
+      </div>
+
+    </div><!-- /admin-main -->
+  </div><!-- /admin-layout -->
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Confirm Action</h3>
+    <p id="modalBody">Are you sure?</p>
+    <div id="modalForm"></div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn modal-btn-confirm" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ <span id="toastMsg"></span></div>
+
+<script>
+// ── DATA STORE ──
+// Clear any old fake seeded data (one-time migration)
+const _stored = localStorage.getItem('yepUsers');
+if (_stored) {
+  try {
+    const _parsed = JSON.parse(_stored);
+    // If it has any of the old fake seed emails, wipe it
+    const _fakeEmails = ['sarah.chen@email.com','m.webb@email.com','priya.nair@mail.com','jokafor@gmail.com'];
+    if (_parsed.some && _parsed.some(u => _fakeEmails.includes(u.email))) {
+      localStorage.removeItem('yepUsers');
+      localStorage.removeItem('yepAccounts');
+    }
+  } catch(e) { localStorage.removeItem('yepUsers'); }
+}
+let users = JSON.parse(localStorage.getItem('yepUsers') || '[]');
+let registeredAccounts = JSON.parse(localStorage.getItem('yepAccounts') || '[]');
+let currentAdmin = false;
+
+function saveUsers() {
+  localStorage.setItem('yepUsers', JSON.stringify(users));
+}
+
+// ── PAGE ROUTING ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'adminPage') renderAdmin();
+}
+
+// ── LOGIN ──
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPassword').value;
+  const err   = document.getElementById('loginError');
+  const ok    = document.getElementById('loginSuccess');
+  err.classList.remove('show'); ok.classList.remove('show');
+
+  if (!email || !pass) { err.textContent = 'Please fill in all fields.'; err.classList.add('show'); return; }
+
+  // Admin login
+  if (email.toLowerCase() === 'admin' || email.toLowerCase() === 'admin@yepcoin.com') {
+    if (pass === 'Ark720039483') {
+      ok.classList.add('show');
+      setTimeout(() => showPage('adminPage'), 900);
+      return;
+    } else {
+      err.textContent = 'Invalid admin credentials.';
+      err.classList.add('show'); return;
+    }
+  }
+
+  // Regular user login
+  const account = registeredAccounts.find(a => a.email === email && a.password === pass);
+  if (account) {
+    ok.classList.add('show');
+    setTimeout(() => showToastGlobal('Welcome back, ' + account.first + '!', 'success'), 1000);
+  } else {
+    err.textContent = 'Invalid email or password. Please try again.';
+    err.classList.add('show');
+  }
+}
+
+// ── REGISTER ──
+function handleRegister() {
+  const first   = document.getElementById('regFirst').value.trim();
+  const last    = document.getElementById('regLast').value.trim();
+  const email   = document.getElementById('regEmail').value.trim();
+  const phone   = document.getElementById('regPhone').value.trim();
+  const dob     = document.getElementById('regDob').value;
+  const pass    = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirm').value;
+  const type    = document.getElementById('regType').value;
+  const terms   = document.getElementById('regTerms').checked;
+  const err     = document.getElementById('registerError');
+  const ok      = document.getElementById('registerSuccess');
+  err.classList.remove('show'); ok.classList.remove('show');
+
+  if (!first || !last || !email || !phone || !dob || !pass || !confirm) {
+    err.textContent = 'Please fill in all required fields.'; err.classList.add('show'); return;
+  }
+  if (pass.length < 8) {
+    err.textContent = 'Password must be at least 8 characters.'; err.classList.add('show'); return;
+  }
+  if (pass !== confirm) {
+    err.textContent = 'Passwords do not match.'; err.classList.add('show'); return;
+  }
+  if (!terms) {
+    err.textContent = 'You must agree to the Terms of Service.'; err.classList.add('show'); return;
+  }
+  if (registeredAccounts.find(a => a.email === email)) {
+    err.textContent = 'An account with this email already exists.'; err.classList.add('show'); return;
+  }
+
+  const typeLabel = { checking: 'Checking', savings: 'Savings', both: 'Checking + Savings' }[type];
+  const newUser = {
+    id: Date.now(), first, last, email, phone, dob, password: pass,
+    type: typeLabel, balance: '$0.00', status: 'active',
+    joined: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+  };
+  registeredAccounts.push(newUser);
+  localStorage.setItem('yepAccounts', JSON.stringify(registeredAccounts));
+
+  // Also add to admin user list
+  users.push({ id: newUser.id, first, last, email, type: typeLabel, balance: '$0.00', status: 'active', joined: newUser.joined });
+  saveUsers();
+
+  ok.classList.add('show');
+  setTimeout(() => { showPage('loginPage'); }, 1800);
+}
+
+// ── LOGOUT ──
+function handleLogout() {
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('loginSuccess').classList.remove('show');
+  showPage('loginPage');
+}
+
+// ── ADMIN RENDER ──
+function renderAdmin() {
+  renderUsersTable(users);
+  renderRecentRegistrations();
+  document.getElementById('statCustomers').textContent = users.length;
+}
+
+function renderRecentRegistrations() {
+  const tbody = document.getElementById('recentRegistrations');
+  const recent = [...users].slice(-5).reverse();
+  if (recent.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">No registrations yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(u => `
+    <tr>
+      <td>${u.first} ${u.last}</td>
+      <td>${u.email}</td>
+      <td>${u.type}</td>
+      <td><span class="badge badge-${u.status === 'active' ? 'active' : u.status === 'pending' ? 'pending' : 'suspended'}">${cap(u.status)}</span></td>
+      <td>${u.joined}</td>
+    </tr>`).join('');
+}
+
+function renderUsersTable(list) {
+  const tbody = document.getElementById('usersTable');
+  const count = document.getElementById('userCount');
+  if (count) count.textContent = list.length + ' customers';
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">No customers registered yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(u => `
+    <tr>
+      <td><strong>${u.first} ${u.last}</strong></td>
+      <td>${u.email}</td>
+      <td>${u.type}</td>
+      <td style="font-weight:600;">${u.balance}</td>
+      <td><span class="badge badge-${u.status === 'active' ? 'active' : u.status === 'pending' ? 'pending' : 'suspended'}">${cap(u.status)}</span></td>
+      <td>
+        <button class="table-action" onclick="toggleStatus(${u.id})">${u.status === 'active' ? 'Suspend' : 'Activate'}</button>
+        <button class="table-action danger" onclick="deleteUser(${u.id})">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterUsers() {
+  const q = document.getElementById('userSearch').value.toLowerCase();
+  const filtered = users.filter(u =>
+    (u.first + ' ' + u.last).toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+  );
+  renderUsersTable(filtered);
+}
+
+function toggleStatus(id) {
+  const u = users.find(u => u.id === id);
+  if (!u) return;
+  u.status = u.status === 'active' ? 'suspended' : 'active';
+  saveUsers();
+  renderUsersTable(users);
+  showToast(`Account ${u.status === 'active' ? 'activated' : 'suspended'}.`, u.status === 'active' ? 'success' : 'error');
+}
+
+function deleteUser(id) {
+  openModal('Delete Customer', 'Are you sure you want to permanently delete this customer account? This cannot be undone.', 'danger', () => {
+    users = users.filter(u => u.id !== id);
+    saveUsers();
+    renderUsersTable(users);
+    document.getElementById('statCustomers').textContent = users.length;
+    showToast('Customer deleted.', 'error');
+    closeModal();
+  });
+}
+
+function showAddUserModal() {
+  document.getElementById('modalTitle').textContent = 'Add Customer';
+  document.getElementById('modalBody').textContent = 'Manually add a new customer to the system.';
+  document.getElementById('modalForm').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">
+      <div class="form-group" style="margin:0;"><label class="form-label">First Name</label><input class="form-input" id="mFirst" placeholder="John"></div>
+      <div class="form-group" style="margin:0;"><label class="form-label">Last Name</label><input class="form-input" id="mLast" placeholder="Smith"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;"><label class="form-label">Email</label><input class="form-input" id="mEmail" type="email" placeholder="john@example.com"></div>
+    <div class="form-group" style="margin-bottom:0;"><label class="form-label">Account Type</label>
+    <select class="form-input" id="mType"><option>Checking</option><option>Savings</option><option>Checking + Savings</option></select></div>
+  `;
+  document.getElementById('modalConfirm').className = 'modal-btn modal-btn-confirm';
+  document.getElementById('modalConfirm').textContent = 'Add Customer';
+  document.getElementById('modalConfirm').onclick = () => {
+    const first = document.getElementById('mFirst').value.trim();
+    const last  = document.getElementById('mLast').value.trim();
+    const email = document.getElementById('mEmail').value.trim();
+    const type  = document.getElementById('mType').value;
+    if (!first || !last || !email) { showToast('Please fill all fields.', 'error'); return; }
+    users.push({ id: Date.now(), first, last, email, type, balance: '$0.00', status: 'active', joined: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) });
+    saveUsers();
+    renderUsersTable(users);
+    document.getElementById('statCustomers').textContent = users.length;
+    showToast('Customer added.', 'success');
+    closeModal();
+  };
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+// ── TABS ──
+function setTab(btn, tabName) {
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+}
+function setTabByName(name) {
+  const btn = [...document.querySelectorAll('.sidebar-item')].find(b => b.getAttribute('onclick')?.includes("'"+name+"'"));
+  if (btn) setTab(btn, name);
+}
+
+// ── MODAL ──
+function openModal(title, body, type, onConfirm) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').textContent = body;
+  document.getElementById('modalForm').innerHTML = '';
+  const btn = document.getElementById('modalConfirm');
+  btn.className = 'modal-btn ' + (type === 'danger' ? 'modal-btn-danger' : 'modal-btn-confirm');
+  btn.textContent = 'Confirm';
+  btn.onclick = onConfirm;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+
+// ── TOAST ──
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toastMsg');
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  m.textContent = msg;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+function showToastGlobal(msg, type) { showToast(msg, type); }
+
+// ── HELPERS ──
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// Enter key on login
+document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+</script>
+</body>
+</html>
