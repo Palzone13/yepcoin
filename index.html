@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yepcoin Bank — Member FDIC</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0a2342;
+  --navy-mid: #123a6b;
+  --blue: #1a5ca8;
+  --blue-light: #2e7dd1;
+  --gold: #b8973a;
+  --gold-light: #d4af5a;
+  --bg: #f5f4f0;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: #ddd9d0;
+  --surface: #fafaf8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+/* TOP UTILITY BAR */
+.util-bar {
+  background: var(--navy);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  padding: 7px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+.util-bar a { color: rgba(255,255,255,0.7); text-decoration: none; }
+.util-bar a:hover { color: #fff; }
+.util-links { display: flex; gap: 24px; }
+
+/* NAV */
+nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.logo-mark {
+  width: 38px; height: 38px;
+  background: var(--navy);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold);
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700;
+}
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 600;
+  color: var(--navy);
+  line-height: 1;
+}
+.logo-sub {
+  font-size: 9px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted);
+  display: block; margin-top: 2px; font-weight: 400;
+}
+.nav-links {
+  display: flex; list-style: none; gap: 2px;
+}
+.nav-links > li { position: relative; }
+.nav-links > li > a {
+  display: block; padding: 0 18px;
+  line-height: 68px;
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.15s;
+}
+.nav-links > li > a:hover { color: var(--blue); }
+.nav-links > li > a::after {
+  content: '';
+  position: absolute; bottom: 0; left: 18px; right: 18px;
+  height: 3px; background: var(--navy);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.2s;
+}
+.nav-links > li > a:hover::after { transform: scaleX(1); }
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+.btn-sign-in {
+  padding: 8px 20px;
+  border: 1.5px solid var(--navy);
+  background: transparent;
+  color: var(--navy);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px; font-weight: 600;
+  border-radius: 3px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-sign-in:hover { background: var(--navy); color: #fff; }
+.btn-open {
+  padding: 8px 20px;
+  background: var(--navy);
+  color: #fff;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px; font-weight: 600;
+  border: none; border-radius: 3px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.15s;
+}
+.btn-open:hover { background: var(--navy-mid); }
+
+/* HERO */
+.hero {
+  background: var(--navy);
+  position: relative; overflow: hidden;
+  min-height: 520px;
+  display: flex;
+}
+.hero-left {
+  flex: 1; padding: 80px 60px 80px 60px;
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; justify-content: center;
+  max-width: 600px;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(184,151,58,0.15);
+  border: 1px solid rgba(184,151,58,0.3);
+  color: var(--gold-light);
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 2px;
+  margin-bottom: 28px; font-weight: 500;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 600; line-height: 1.1;
+  color: #fff; margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.hero h1 em { color: var(--gold-light); font-style: normal; }
+.hero p {
+  font-size: 17px; color: rgba(255,255,255,0.65);
+  line-height: 1.7; max-width: 440px; margin-bottom: 36px;
+}
+.hero-btns { display: flex; gap: 14px; }
+.hero-btn-primary {
+  background: var(--gold);
+  color: var(--navy);
+  border: none; padding: 14px 32px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px; font-weight: 700;
+  border-radius: 3px; cursor: pointer;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  transition: background 0.2s;
+}
+.hero-btn-primary:hover { background: var(--gold-light); }
+.hero-btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 14px 32px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px; font-weight: 600;
+  border-radius: 3px; cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s, color 0.2s;
+}
+.hero-btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+.hero-right {
+  flex: 1; position: relative; display: flex; align-items: center; justify-content: center;
+}
+.hero-card-stack { position: relative; width: 340px; height: 220px; }
+.bank-card {
+  width: 300px; height: 185px;
+  border-radius: 14px;
+  padding: 24px 28px;
+  position: absolute;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-1 {
+  background: linear-gradient(135deg, #1a3a6b 0%, #0f2040 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  top: 0; left: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 2;
+  transform: rotate(-3deg);
+}
+.card-2 {
+  background: linear-gradient(135deg, #b8973a 0%, #8a6e22 100%);
+  top: 30px; left: 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  z-index: 1;
+  transform: rotate(2deg);
+}
+.card-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.05em;
+}
+.card-chip {
+  width: 32px; height: 24px;
+  background: linear-gradient(135deg, #d4af5a, #a87c28);
+  border-radius: 4px;
+}
+.card-number {
+  font-family: 'Source Sans 3', monospace;
+  font-size: 14px; letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.7);
+}
+.card-info { display: flex; gap: 24px; }
+.card-info-label { font-size: 9px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+.card-info-val { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; margin-top: 2px; }
+.hero-geo {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden;
+}
+.hero-geo svg { width: 100%; height: 100%; opacity: 0.04; }
+
+/* FDIC BANNER */
+.fdic-bar {
+  background: var(--white);
+  border-bottom: 3px solid var(--gold);
+  padding: 12px 60px;
+  display: flex; align-items: center; gap: 16px;
+}
+.fdic-badge {
+  background: var(--navy);
+  color: #fff;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 2px;
+}
+.fdic-text { font-size: 13px; color: var(--muted); }
+.fdic-text strong { color: var(--text); }
+
+/* PRODUCTS */
+.products { padding: 80px 60px; background: var(--surface); }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-label {
+  font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 600; margin-bottom: 12px; display: block;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 600; color: var(--navy);
+  letter-spacing: -0.02em; line-height: 1.15;
+}
+.products-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  max-width: 1100px; margin: 0 auto;
+}
+.product-card {
+  background: var(--white);
+  padding: 40px 32px;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.product-card:hover { background: #fefefe; }
+.product-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; background: var(--navy);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s;
+}
+.product-card:hover::after { transform: scaleX(1); }
+.product-icon {
+  width: 48px; height: 48px;
+  background: #f0f4f9;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 20px;
+}
+.product-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600;
+  color: var(--navy); margin-bottom: 10px;
+}
+.product-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.product-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 20px; font-size: 13px; font-weight: 600;
+  color: var(--blue); text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.product-link:hover { color: var(--navy); }
+
+/* RATES */
+.rates { padding: 80px 60px; background: var(--navy); }
+.rates .section-title { color: #fff; }
+.rates .section-label { color: var(--gold-light); }
+.rates-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; max-width: 900px; margin: 48px auto 0;
+}
+.rate-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px; padding: 36px 32px;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+.rate-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(184,151,58,0.3);
+}
+.rate-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px; font-weight: 700;
+  color: var(--gold-light); line-height: 1;
+  margin-bottom: 4px;
+}
+.rate-apy {
+  font-size: 12px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
+}
+.rate-name {
+  font-size: 16px; font-weight: 600; color: #fff;
+  margin-bottom: 8px;
+}
+.rate-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+/* FEATURES */
+.features { padding: 80px 60px; }
+.features-inner { max-width: 1100px; margin: 0 auto; }
+.features-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center; margin-top: 56px;
+}
+.features-img {
+  background: var(--navy);
+  border-radius: 8px; height: 420px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.mock-app {
+  width: 260px;
+  background: #0e1e35;
+  border-radius: 20px;
+  padding: 24px 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+}
+.mock-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+}
+.mock-greeting { font-size: 12px; color: rgba(255,255,255,0.5); }
+.mock-name { font-size: 15px; font-weight: 600; color: #fff; margin-top: 2px; }
+.mock-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: var(--navy);
+}
+.mock-balance-label { font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 4px; }
+.mock-balance { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 20px; }
+.mock-actions { display: flex; gap: 8px; margin-bottom: 24px; }
+.mock-action {
+  flex: 1; background: rgba(255,255,255,0.06); border-radius: 8px;
+  padding: 10px 6px; text-align: center; font-size: 10px; color: rgba(255,255,255,0.6);
+}
+.mock-action .icon { font-size: 16px; display: block; margin-bottom: 4px; }
+.mock-transactions { display: flex; flex-direction: column; gap: 12px; }
+.mock-tx {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px;
+}
+.mock-tx-left { display: flex; gap: 10px; align-items: center; }
+.mock-tx-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.mock-tx-name { color: rgba(255,255,255,0.8); font-weight: 500; }
+.mock-tx-date { font-size: 10px; color: rgba(255,255,255,0.35); }
+.mock-tx-amount { font-weight: 600; }
+.mock-tx-amount.pos { color: #4ade80; }
+.mock-tx-amount.neg { color: rgba(255,255,255,0.6); }
+
+.features-list { display: flex; flex-direction: column; gap: 32px; }
+.feature-item { display: flex; gap: 20px; align-items: flex-start; }
+.feature-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 700; color: var(--border);
+  line-height: 1; flex-shrink: 0; width: 40px;
+}
+.feature-item h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600; color: var(--navy);
+  margin-bottom: 8px;
+}
+.feature-item p { font-size: 15px; color: var(--muted); line-height: 1.65; }
+
+/* TRUST */
+.trust { background: var(--white); padding: 60px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.trust-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 60px; }
+.trust-intro { flex-shrink: 0; max-width: 280px; }
+.trust-intro h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+.trust-intro p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.trust-divider { width: 1px; height: 80px; background: var(--border); flex-shrink: 0; }
+.trust-items { display: flex; gap: 48px; flex: 1; }
+.trust-item { text-align: center; }
+.trust-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.trust-item h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.trust-item p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* CTA */
+.cta-section {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%);
+  padding: 100px 60px; text-align: center;
+}
+.cta-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 50px);
+  font-weight: 600; color: #fff; margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.cta-section p { font-size: 17px; color: rgba(255,255,255,0.6); max-width: 480px; margin: 0 auto 40px; line-height: 1.7; }
+.cta-btns { display: flex; gap: 14px; justify-content: center; }
+
+/* FOOTER */
+footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 60px 60px 32px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 48px;
+}
+.footer-brand .logo-mark { margin-bottom: 16px; }
+.footer-brand p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; max-width: 240px; }
+.footer-col h5 {
+  font-size: 11px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 16px; font-weight: 600;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col a {
+  font-size: 14px; color: rgba(255,255,255,0.6);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-col a:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.7; max-width: 600px; }
+.footer-badges { display: flex; gap: 12px; align-items: center; }
+.footer-badge {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 5px 10px; border-radius: 2px;
+  font-weight: 600;
+}
+
+/* Animations */
+.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 960px) {
+  .util-bar, .fdic-bar, nav { padding-left: 20px; padding-right: 20px; }
+  .hero { flex-direction: column; }
+  .hero-left { padding: 60px 24px 40px; max-width: 100%; }
+  .hero-right { display: none; }
+  .products, .rates, .features, .trust, .cta-section { padding-left: 24px; padding-right: 24px; }
+  .products-grid { grid-template-columns: 1fr 1fr; }
+  .rates-grid { grid-template-columns: 1fr; max-width: 360px; }
+  .features-grid { grid-template-columns: 1fr; gap: 40px; }
+  .trust-inner { flex-direction: column; gap: 32px; }
+  .trust-divider { display: none; }
+  .trust-items { flex-wrap: wrap; justify-content: center; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 16px; }
+  footer { padding: 40px 24px 24px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="util-bar">
+  <div class="util-links">
+    <a href="#">Personal</a>
+    <a href="#">Business</a>
+    <a href="#">Wealth Management</a>
+    <a href="#">About Us</a>
+  </div>
+  <div class="util-links">
+    <a href="#">Locations & ATMs</a>
+    <a href="#">Customer Service</a>
+    <a href="#">En Español</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-mark">Y</div>
+    <div class="logo-text">
+      Yepcoin Bank
+      <span class="logo-sub">Member FDIC</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Checking</a></li>
+    <li><a href="#">Savings</a></li>
+    <li><a href="#">Loans</a></li>
+    <li><a href="#">Investing</a></li>
+    <li><a href="#">Credit Cards</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-sign-in">Sign In</button>
+    <button class="btn-open">Open Account</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-geo">
+    <svg viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice">
+      <circle cx="600" cy="260" r="300" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="600" cy="260" r="220" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="600" cy="260" r="140" fill="none" stroke="white" stroke-width="1"/>
+      <line x1="300" y1="0" x2="900" y2="520" stroke="white" stroke-width="1"/>
+      <line x1="200" y1="0" x2="800" y2="520" stroke="white" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="hero-left">
+    <div class="hero-tag">✦ Now Serving All 50 States</div>
+    <h1>Banking built on <em>trust</em> and simplicity.</h1>
+    <p>Yepcoin Bank offers modern banking with the reliability and security you expect from a full-service financial institution. FDIC insured up to $250,000.</p>
+    <div class="hero-btns">
+      <button class="hero-btn-primary">Open an Account</button>
+      <button class="hero-btn-ghost">Explore Products</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card-stack">
+      <div class="bank-card card-2">
+        <div class="card-logo">Yepcoin Bank</div>
+        <div>
+          <div class="card-number">•••• •••• •••• 4291</div>
+          <div class="card-info" style="margin-top:8px;">
+            <div><div class="card-info-label">Card Holder</div><div class="card-info-val">J. Smith</div></div>
+            <div><div class="card-info-label">Expires</div><div class="card-info-val">09/29</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bank-card card-1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="card-logo">Yepcoin Bank</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;">PLATINUM</div>
+        </div>
+        <div class="card-chip"></div>
+        <div>
+          <div class="card-number">•••• •••• •••• 8847</div>
+          <div class="card-info" style="margin-top:8px;">
+            <div><div class="card-info-label">Card Holder</div><div class="card-info-val">A. Johnson</div></div>
+            <div><div class="card-info-label">Expires</div><div class="card-info-val">03/28</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FDIC BAR -->
+<div class="fdic-bar">
+  <span class="fdic-badge">FDIC</span>
+  <span class="fdic-text"><strong>Your deposits are insured.</strong> Yepcoin Bank is a member of the FDIC. Deposits insured up to $250,000 per depositor, per ownership category.</span>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products">
+  <div class="section-header fade-in">
+    <span class="section-label">Our Products</span>
+    <h2 class="section-title">Everything you need<br>in one place.</h2>
+  </div>
+  <div class="products-grid fade-in">
+    <div class="product-card">
+      <div class="product-icon">🏦</div>
+      <h3>Checking</h3>
+      <p>No monthly fees, no minimum balance. Access your money anywhere with our nationwide ATM network.</p>
+      <a href="#" class="product-link">Learn more →</a>
+    </div>
+    <div class="product-card">
+      <div class="product-icon">💰</div>
+      <h3>Savings</h3>
+      <p>High-yield savings accounts with competitive APY. Watch your money grow with zero effort.</p>
+      <a href="#" class="product-link">Learn more →</a>
+    </div>
+    <div class="product-card">
+      <div class="product-icon">🏠</div>
+      <h3>Home Loans</h3>
+      <p>Fixed and adjustable-rate mortgages with competitive rates and a streamlined application process.</p>
+      <a href="#" class="product-link">Learn more →</a>
+    </div>
+    <div class="product-card">
+      <div class="product-icon">📈</div>
+      <h3>Investing</h3>
+      <p>Brokerage accounts, IRAs, and managed portfolios. Start investing with as little as $1.</p>
+      <a href="#" class="product-link">Learn more →</a>
+    </div>
+  </div>
+</section>
+
+<!-- RATES -->
+<section class="rates">
+  <div class="section-header fade-in">
+    <span class="section-label">Current Rates</span>
+    <h2 class="section-title">Rates that work for you.</h2>
+  </div>
+  <div class="rates-grid fade-in">
+    <div class="rate-card">
+      <div class="rate-val">4.85%</div>
+      <div class="rate-apy">APY</div>
+      <div class="rate-name">High-Yield Savings</div>
+      <div class="rate-desc">No minimum balance required. Interest compounded daily.</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-val">5.10%</div>
+      <div class="rate-apy">APY</div>
+      <div class="rate-name">12-Month CD</div>
+      <div class="rate-desc">Guaranteed rate. $1,000 minimum deposit to open.</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-val">6.49%</div>
+      <div class="rate-apy">APR</div>
+      <div class="rate-name">Personal Loan</div>
+      <div class="rate-desc">Fixed rate. Terms from 12–60 months. No origination fee.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <div class="section-header fade-in">
+      <span class="section-label">Mobile Banking</span>
+      <h2 class="section-title">Your bank, in your pocket.</h2>
+    </div>
+    <div class="features-grid fade-in">
+      <div class="features-img">
+        <div class="mock-app">
+          <div class="mock-header">
+            <div>
+              <div class="mock-greeting">Good morning,</div>
+              <div class="mock-name">Alex Johnson</div>
+            </div>
+            <div class="mock-avatar">AJ</div>
+          </div>
+          <div class="mock-balance-label">Total Balance</div>
+          <div class="mock-balance">$12,480.00</div>
+          <div class="mock-actions">
+            <div class="mock-action"><span class="icon">↑</span>Send</div>
+            <div class="mock-action"><span class="icon">↓</span>Receive</div>
+            <div class="mock-action"><span class="icon">⇄</span>Transfer</div>
+            <div class="mock-action"><span class="icon">📋</span>Pay Bill</div>
+          </div>
+          <div class="mock-transactions">
+            <div class="mock-tx">
+              <div class="mock-tx-left">
+                <div class="mock-tx-dot">🛒</div>
+                <div><div class="mock-tx-name">Grocery Store</div><div class="mock-tx-date">Today</div></div>
+              </div>
+              <div class="mock-tx-amount neg">−$84.20</div>
+            </div>
+            <div class="mock-tx">
+              <div class="mock-tx-left">
+                <div class="mock-tx-dot">💼</div>
+                <div><div class="mock-tx-name">Direct Deposit</div><div class="mock-tx-date">Yesterday</div></div>
+              </div>
+              <div class="mock-tx-amount pos">+$2,400.00</div>
+            </div>
+            <div class="mock-tx">
+              <div class="mock-tx-left">
+                <div class="mock-tx-dot">☕</div>
+                <div><div class="mock-tx-name">Coffee Shop</div><div class="mock-tx-date">May 8</div></div>
+              </div>
+              <div class="mock-tx-amount neg">−$6.50</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="features-list">
+        <div class="feature-item">
+          <div class="feature-num">01</div>
+          <div>
+            <h4>Instant Transfers</h4>
+            <p>Send money to anyone instantly — friends, family, or businesses — with zero fees on Yepcoin-to-Yepcoin transfers.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-num">02</div>
+          <div>
+            <h4>Smart Spending Insights</h4>
+            <p>Automatic categorization of your transactions with monthly spending reports and budget tracking built right in.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-num">03</div>
+          <div>
+            <h4>Instant Card Lock</h4>
+            <p>Lost your card? Lock it instantly from the app. Unlock it just as fast when you find it under the couch cushion.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-num">04</div>
+          <div>
+            <h4>256-bit Encryption</h4>
+            <p>Bank-grade security protects every transaction. Biometric login, two-factor authentication, and real-time fraud alerts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust fade-in">
+  <div class="trust-inner">
+    <div class="trust-intro">
+      <h3>Why Yepcoin Bank?</h3>
+      <p>We've built a bank that treats you like a person, not an account number.</p>
+    </div>
+    <div class="trust-divider"></div>
+    <div class="trust-items">
+      <div class="trust-item">
+        <span class="trust-icon">🛡️</span>
+        <h4>FDIC Insured</h4>
+        <p>Up to $250,000<br>per depositor</p>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">🏧</span>
+        <h4>40,000+ ATMs</h4>
+        <p>Fee-free nationwide<br>ATM network</p>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">📞</span>
+        <h4>24/7 Support</h4>
+        <p>Real humans,<br>any time of day</p>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">⚡</span>
+        <h4>Instant Setup</h4>
+        <p>Open an account<br>in under 5 minutes</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section fade-in">
+  <h2>Ready to bank smarter?</h2>
+  <p>Join thousands of customers who trust Yepcoin Bank with their financial future.</p>
+  <div class="cta-btns">
+    <button class="hero-btn-primary">Open a Free Account</button>
+    <button class="hero-btn-ghost">Talk to an Advisor</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark" style="margin-bottom:16px;">Y</div>
+      <p>Yepcoin Bank, N.A. Member FDIC. Equal Housing Lender. All products subject to credit approval. Terms and conditions apply.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Personal</h5>
+      <ul>
+        <li><a href="#">Checking Accounts</a></li>
+        <li><a href="#">Savings Accounts</a></li>
+        <li><a href="#">Credit Cards</a></li>
+        <li><a href="#">Home Loans</a></li>
+        <li><a href="#">Auto Loans</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Business</h5>
+      <ul>
+        <li><a href="#">Business Checking</a></li>
+        <li><a href="#">Business Savings</a></li>
+        <li><a href="#">Merchant Services</a></li>
+        <li><a href="#">Business Loans</a></li>
+        <li><a href="#">Payroll</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press Room</a></li>
+        <li><a href="#">Investor Relations</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Yepcoin Bank, N.A. All rights reserved. Member FDIC. Equal Housing Lender ⌂. Yepcoin Bank is chartered under the laws of the United States. Deposits are insured by the Federal Deposit Insurance Corporation up to the maximum amount permitted by law.</p>
+    <div class="footer-badges">
+      <span class="footer-badge">FDIC</span>
+      <span class="footer-badge">Equal Housing</span>
+      <span class="footer-badge">SSL Secured</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
