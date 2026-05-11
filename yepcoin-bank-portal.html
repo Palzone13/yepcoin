@@ -6,198 +6,306 @@
 <title>Yepcoin Bank — Secure Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --navy: #0a2342; --navy-mid: #123a6b; --blue: #1a5ca8;
-  --gold: #b8973a; --gold-light: #d4af5a;
-  --bg: #f5f4f0; --white: #ffffff; --text: #1a1a1a;
-  --muted: #6b7280; --border: #ddd9d0;
-  --error: #c0392b; --success: #16a34a; --surface: #fafaf8;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0a2342;--navy-mid:#123a6b;--blue:#1a5ca8;
+  --gold:#b8973a;--gold-light:#d4af5a;
+  --bg:#f5f4f0;--white:#fff;--text:#1a1a1a;
+  --muted:#6b7280;--border:#ddd9d0;
+  --error:#c0392b;--success:#16a34a;--surface:#fafaf8;
+  --purple:#7c3aed;--orange:#ea580c;
 }
-html, body { height: 100%; }
-body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+html,body{height:100%;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.page{display:none;min-height:100vh;flex-direction:column;}
+.page.active{display:flex;}
 
-.page { display: none; min-height: 100vh; flex-direction: column; }
-.page.active { display: flex; }
+/* NAV */
+.portal-nav{background:var(--navy);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.logo-mark{width:34px;height:34px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);}
+.logo-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:#fff;}
+.logo-sub{font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.4);display:block;text-transform:uppercase;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-link{color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;background:none;border:none;font-family:inherit;transition:color .2s;}
+.nav-link:hover{color:#fff;}
+.nav-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:2px;}
 
-.portal-nav { background: var(--navy); padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.logo-mark { width: 34px; height: 34px; background: var(--gold); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--navy); }
-.logo-text { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 600; color: #fff; }
-.logo-sub { font-size: 9px; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); display: block; text-transform: uppercase; }
-.nav-right { display: flex; align-items: center; gap: 16px; }
-.nav-link { color: rgba(255,255,255,0.6); font-size: 13px; cursor: pointer; background: none; border: none; font-family: inherit; transition: color 0.2s; }
-.nav-link:hover { color: #fff; }
-.nav-badge { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 8px; border-radius: 2px; }
+/* AUTH */
+.auth-wrapper{flex:1;display:flex;}
+.auth-left{flex:1;background:var(--navy);display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.auth-left-geo{position:absolute;inset:0;opacity:.05;}
+.auth-left-geo svg{width:100%;height:100%;}
+.auth-left-content{position:relative;z-index:1;}
+.auth-left h2{font-family:'Playfair Display',serif;font-size:40px;font-weight:600;color:#fff;line-height:1.15;margin-bottom:20px;letter-spacing:-.02em;}
+.auth-left h2 em{color:var(--gold-light);font-style:normal;}
+.auth-left p{font-size:16px;color:rgba(255,255,255,.55);line-height:1.7;max-width:360px;margin-bottom:40px;}
+.auth-features{display:flex;flex-direction:column;gap:16px;}
+.auth-feature{display:flex;align-items:center;gap:12px;}
+.auth-feature-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.auth-feature span{font-size:14px;color:rgba(255,255,255,.65);}
+.auth-right{width:480px;flex-shrink:0;background:var(--white);display:flex;flex-direction:column;justify-content:center;padding:60px 52px;border-left:1px solid var(--border);overflow-y:auto;}
 
-.auth-wrapper { flex: 1; display: flex; }
-.auth-left { flex: 1; background: var(--navy); display: flex; flex-direction: column; justify-content: center; padding: 80px 60px; position: relative; overflow: hidden; }
-.auth-left-geo { position: absolute; inset: 0; opacity: 0.05; }
-.auth-left-geo svg { width: 100%; height: 100%; }
-.auth-left-content { position: relative; z-index: 1; }
-.auth-left h2 { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 600; color: #fff; line-height: 1.15; margin-bottom: 20px; letter-spacing: -0.02em; }
-.auth-left h2 em { color: var(--gold-light); font-style: normal; }
-.auth-left p { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 360px; margin-bottom: 40px; }
-.auth-features { display: flex; flex-direction: column; gap: 16px; }
-.auth-feature { display: flex; align-items: center; gap: 12px; }
-.auth-feature-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
-.auth-feature span { font-size: 14px; color: rgba(255,255,255,0.65); }
-.auth-right { width: 480px; flex-shrink: 0; background: var(--white); display: flex; flex-direction: column; justify-content: center; padding: 60px 52px; border-left: 1px solid var(--border); overflow-y: auto; }
+/* FORMS */
+.form-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.form-subtitle{font-size:14px;color:var(--muted);margin-bottom:36px;line-height:1.5;}
+.form-group{margin-bottom:20px;}
+.form-label{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:7px;}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:3px;font-family:'Source Sans 3',sans-serif;font-size:15px;color:var(--text);background:var(--surface);transition:border-color .2s,box-shadow .2s;outline:none;}
+.form-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,35,66,.08);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-btn{width:100%;padding:14px;background:var(--navy);color:#fff;border:none;border-radius:3px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;margin-top:8px;transition:background .2s,opacity .2s;}
+.form-btn:hover{background:var(--navy-mid);}
+.form-btn:disabled{opacity:.6;cursor:not-allowed;}
+.form-divider{display:flex;align-items:center;gap:12px;margin:24px 0;}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.form-divider span{font-size:12px;color:var(--muted);}
+.form-switch{text-align:center;margin-top:20px;font-size:14px;color:var(--muted);}
+.form-switch-link{color:var(--blue);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;font-size:inherit;}
+.form-switch-link:hover{text-decoration:underline;}
+.alert{padding:12px 14px;border-radius:3px;font-size:13px;margin-bottom:20px;display:none;}
+.alert.error{background:#fef2f2;border:1px solid #fecaca;color:var(--error);}
+.alert.success{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--success);}
+.alert.show{display:block;}
+.fdic-strip{background:var(--navy);border-top:2px solid var(--gold);padding:10px 48px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.fdic-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:9px;font-weight:700;letter-spacing:.15em;padding:3px 7px;border-radius:2px;}
+.fdic-strip span{font-size:12px;color:rgba(255,255,255,.4);}
 
-.form-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-.form-subtitle { font-size: 14px; color: var(--muted); margin-bottom: 36px; line-height: 1.5; }
-.form-group { margin-bottom: 20px; }
-.form-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); margin-bottom: 7px; }
-.form-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 3px; font-family: 'Source Sans 3', sans-serif; font-size: 15px; color: var(--text); background: var(--surface); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
-.form-input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(10,35,66,0.08); }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-btn { width: 100%; padding: 14px; background: var(--navy); color: #fff; border: none; border-radius: 3px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 8px; transition: background 0.2s, opacity 0.2s; }
-.form-btn:hover { background: var(--navy-mid); }
-.form-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.form-divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; }
-.form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.form-divider span { font-size: 12px; color: var(--muted); }
-.form-switch { text-align: center; margin-top: 20px; font-size: 14px; color: var(--muted); }
-.form-switch-link { color: var(--blue); font-weight: 600; cursor: pointer; background: none; border: none; font-family: inherit; font-size: inherit; }
-.form-switch-link:hover { text-decoration: underline; }
-.alert { padding: 12px 14px; border-radius: 3px; font-size: 13px; margin-bottom: 20px; display: none; }
-.alert.error { background: #fef2f2; border: 1px solid #fecaca; color: var(--error); }
-.alert.success { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--success); }
-.alert.show { display: block; }
+/* USER DASHBOARD SHELL */
+.user-dashboard{flex:1;display:flex;flex-direction:column;}
+.user-dash-header{background:var(--navy);padding:28px 48px 0;flex-shrink:0;}
+.user-welcome{color:rgba(255,255,255,.6);font-size:13px;margin-bottom:2px;}
+.user-name-display{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:#fff;margin-bottom:20px;}
 
-.fdic-strip { background: var(--navy); border-top: 2px solid var(--gold); padding: 10px 48px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-.fdic-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); font-size: 9px; font-weight: 700; letter-spacing: 0.15em; padding: 3px 7px; border-radius: 2px; }
-.fdic-strip span { font-size: 12px; color: rgba(255,255,255,0.4); }
+/* ACCOUNT TABS */
+.acc-tabs{display:flex;gap:2px;padding:0 48px;}
+.acc-tab{padding:10px 20px;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+.acc-tab.active{color:#fff;border-bottom-color:var(--gold);}
+.acc-tab:hover{color:rgba(255,255,255,.85);}
+.user-dash-body{flex:1;background:var(--bg);overflow-y:auto;}
+.tab-panel{display:none;padding:32px 48px;}
+.tab-panel.active{display:block;}
 
-/* USER DASHBOARD */
-.user-dashboard { flex: 1; display: flex; flex-direction: column; }
-.user-dash-header { background: var(--navy); padding: 32px 48px 0; }
-.user-welcome { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 4px; }
-.user-name-display { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: #fff; margin-bottom: 28px; }
-.user-balance-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px 10px 0 0; padding: 28px 32px; display: flex; justify-content: space-between; align-items: flex-end; }
-.balance-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
-.balance-amount { font-family: 'Playfair Display', serif; font-size: 44px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
-.balance-type { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-.balance-actions { display: flex; gap: 10px; }
-.bal-btn { padding: 10px 20px; border-radius: 4px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.2s; }
-.bal-btn-primary { background: var(--gold); color: var(--navy); }
-.bal-btn-ghost { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-.bal-btn:hover { opacity: 0.85; }
-.user-dash-body { padding: 32px 48px; flex: 1; background: var(--bg); }
-.user-dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.dash-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.dash-card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.dash-card-title { font-size: 15px; font-weight: 700; color: var(--navy); }
-.tx-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 1px solid #f0ede8; }
-.tx-item:last-child { border-bottom: none; }
-.tx-left { display: flex; gap: 12px; align-items: center; }
-.tx-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
-.tx-name { font-size: 14px; font-weight: 600; color: var(--text); }
-.tx-meta { font-size: 12px; color: var(--muted); margin-top: 1px; }
-.tx-right { text-align: right; }
-.tx-amount { font-size: 15px; font-weight: 700; }
-.tx-credit { color: var(--success); }
-.tx-debit { color: var(--text); }
-.tx-badge { font-size: 11px; margin-top: 2px; }
-.empty-state { padding: 40px 24px; text-align: center; color: var(--muted); font-size: 14px; }
+/* OVERVIEW PANEL */
+.overview-top{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.bal-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow .2s;}
+.bal-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.bal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.bal-card.checking::before{background:var(--navy);}
+.bal-card.savings::before{background:var(--success);}
+.bal-card.investing::before{background:var(--purple);}
+.bal-card.credit::before{background:var(--orange);}
+.bal-card-icon{font-size:22px;margin-bottom:10px;}
+.bal-card-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.bal-card-amount{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy);line-height:1;}
+.bal-card-amount.negative{color:var(--error);}
+.bal-card-sub{font-size:12px;color:var(--muted);margin-top:5px;}
+.bal-card-sub.green{color:var(--success);}
+.bal-card-sub.red{color:var(--error);}
+.overview-actions{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.action-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--white);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;transition:background .15s,border-color .15s;}
+.action-btn:hover{background:var(--surface);border-color:#b0aca4;}
+.action-btn span{font-size:16px;}
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.dash-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.dash-card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.dash-card-title{font-size:14px;font-weight:700;color:var(--navy);}
+.dash-card-action{font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;}
+.tx-item{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid #f0ede8;}
+.tx-item:last-child{border-bottom:none;}
+.tx-left{display:flex;gap:10px;align-items:center;}
+.tx-icon{width:34px;height:34px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.tx-name{font-size:13px;font-weight:600;color:var(--text);}
+.tx-meta{font-size:11px;color:var(--muted);margin-top:1px;}
+.tx-right{text-align:right;}
+.tx-amount{font-size:14px;font-weight:700;}
+.tx-credit{color:var(--success);}
+.tx-debit{color:var(--text);}
+.tx-badge{font-size:11px;margin-top:2px;}
+.empty-state{padding:32px 20px;text-align:center;color:var(--muted);font-size:13px;}
+
+/* SAVINGS PANEL */
+.savings-hero{background:linear-gradient(135deg,#064e3b,#065f46);border-radius:12px;padding:32px;margin-bottom:24px;color:#fff;display:flex;justify-content:space-between;align-items:center;}
+.savings-hero h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.savings-hero p{font-size:13px;color:rgba(255,255,255,.65);max-width:360px;}
+.savings-bal{text-align:right;}
+.savings-bal-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;}
+.savings-bal-amount{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;}
+.savings-bal-apy{font-size:13px;color:rgba(255,255,255,.7);margin-top:4px;}
+.savings-actions{display:flex;gap:10px;margin-top:20px;}
+.sav-btn{padding:10px 22px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .2s;}
+.sav-btn:hover{opacity:.85;}
+.sav-btn-primary{background:#fff;color:#065f46;}
+.sav-btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
+.interest-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.int-stat-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.int-stat-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
+.int-stat-val.green{color:var(--success);}
+
+/* INVESTING PANEL */
+.invest-hero{background:linear-gradient(135deg,#3b0764,#4c1d95);border-radius:12px;padding:32px;margin-bottom:24px;color:#fff;display:flex;justify-content:space-between;align-items:center;}
+.invest-hero h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.invest-hero p{font-size:13px;color:rgba(255,255,255,.65);max-width:360px;}
+.portfolio-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.stock-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.stock-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.stock-symbol{font-size:18px;font-weight:800;color:var(--navy);}
+.stock-name{font-size:12px;color:var(--muted);margin-top:2px;}
+.stock-price{text-align:right;}
+.stock-cur-price{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);}
+.stock-change{font-size:12px;font-weight:600;margin-top:2px;}
+.stock-change.up{color:var(--success);}
+.stock-change.down{color:var(--error);}
+.stock-stats{display:flex;gap:16px;padding-top:12px;border-top:1px solid var(--border);}
+.stock-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.stock-stat-val{font-size:13px;font-weight:600;color:var(--text);margin-top:2px;}
+.invest-actions{display:flex;gap:10px;margin-top:20px;}
+.inv-btn{padding:10px 22px;border-radius:6px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .2s;}
+.inv-btn:hover{opacity:.85;}
+.inv-btn-primary{background:#fff;color:#4c1d95;}
+.inv-btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
+
+/* CREDIT PANEL */
+.credit-hero{background:linear-gradient(135deg,#7c2d12,#9a3412);border-radius:12px;padding:32px;margin-bottom:24px;color:#fff;}
+.credit-card-visual{background:linear-gradient(135deg,#1e3a5f,#0a2342);border-radius:16px;padding:28px;margin-bottom:24px;color:#fff;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.credit-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.credit-card-logo{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;}
+.credit-card-chip{width:32px;height:24px;background:linear-gradient(135deg,var(--gold-light),var(--gold));border-radius:4px;}
+.credit-card-number{font-size:15px;letter-spacing:.2em;color:rgba(255,255,255,.7);margin-bottom:18px;}
+.credit-card-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
+.credit-info-label{font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.5);text-transform:uppercase;}
+.credit-info-val{font-size:14px;font-weight:600;margin-top:2px;}
+.credit-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.credit-stat{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.credit-stat-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.credit-stat-val{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--navy);}
+.credit-bar-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:24px;}
+.credit-bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;}
+.credit-bar-label span:first-child{font-weight:600;color:var(--navy);}
+.credit-bar-label span:last-child{color:var(--muted);}
+.credit-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.credit-bar-fill{height:100%;border-radius:4px;background:var(--navy);transition:width .5s;}
+.credit-bar-fill.warning{background:var(--orange);}
+.credit-bar-fill.danger{background:var(--error);}
+
+/* LOANS PANEL */
+.loan-hero{background:linear-gradient(135deg,#0a2342,#1a3a6b);border-radius:12px;padding:32px;margin-bottom:24px;color:#fff;display:flex;justify-content:space-between;align-items:center;}
+.loan-hero h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.loan-hero p{font-size:13px;color:rgba(255,255,255,.65);max-width:360px;}
+.loan-btn{padding:12px 24px;background:var(--gold);color:var(--navy);border:none;border-radius:6px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.loan-btn:hover{opacity:.9;}
+.loan-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:16px;}
+.loan-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.loan-type{font-size:16px;font-weight:700;color:var(--navy);}
+.loan-date{font-size:12px;color:var(--muted);margin-top:2px;}
+.loan-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.loan-stat-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.loan-stat-val{font-size:16px;font-weight:700;color:var(--navy);}
+.loan-progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:16px;}
+.loan-progress-fill{height:100%;background:var(--navy);border-radius:3px;transition:width .5s;}
+.loan-actions{display:flex;gap:10px;}
+.loan-action-btn{padding:8px 18px;border-radius:5px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+.loan-action-btn:hover{opacity:.85;}
+.loan-pay-btn{background:var(--navy);color:#fff;border:none;}
+.loan-detail-btn{background:var(--surface);color:var(--navy);border:1px solid var(--border);}
 
 /* ADMIN */
-#adminPage { background: #f0f2f5; }
-.admin-layout { display: flex; flex: 1; overflow: hidden; min-height: calc(100vh - 64px); }
-.admin-sidebar { width: 240px; background: var(--navy); flex-shrink: 0; display: flex; flex-direction: column; padding: 24px 0; }
-.sidebar-section { margin-bottom: 8px; }
-.sidebar-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 0 20px; margin-bottom: 4px; font-weight: 600; }
-.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; font-family: inherit; }
-.sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.sidebar-item.active { background: rgba(255,255,255,0.1); color: #fff; border-right: 3px solid var(--gold); }
-.sidebar-icon { font-size: 16px; width: 20px; text-align: center; }
-.sidebar-badge { background: var(--error); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: auto; }
-.sidebar-spacer { flex: 1; }
-.sidebar-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-.sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--navy); flex-shrink: 0; }
-.sidebar-user-name { font-size: 13px; color: #fff; font-weight: 600; }
-.sidebar-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
-.admin-main { flex: 1; overflow-y: auto; padding: 32px 36px; }
-.admin-header { margin-bottom: 32px; }
-.admin-header h1 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--navy); }
-.admin-header p { font-size: 14px; color: var(--muted); margin-top: 4px; }
-.admin-breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-.admin-breadcrumb span { color: var(--navy); font-weight: 500; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 24px 20px; }
-.stat-card-label { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.stat-card-val { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; }
-.stat-card-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
-.stat-card-sub.urgent { color: var(--error); font-weight: 600; }
-.admin-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 24px; overflow: hidden; }
-.admin-card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.admin-card-title { font-size: 15px; font-weight: 700; color: var(--navy); }
-.admin-card-action { font-size: 12px; font-weight: 600; color: var(--blue); background: none; border: none; cursor: pointer; font-family: inherit; }
-.pending-alert { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 6px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
-.pending-alert-text { font-size: 14px; color: #9a3412; font-weight: 500; }
-.pending-alert-text strong { color: #7c2d12; }
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 10px 24px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--surface); border-bottom: 1px solid var(--border); }
-td { padding: 14px 24px; font-size: 14px; border-bottom: 1px solid #f0ede8; color: var(--text); }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #fafaf8; }
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.badge-active { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
-.badge-pending { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-.badge-suspended { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
-.badge-cleared { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
-.badge-approved { background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; }
-.badge-rejected { background: #fef2f2; color: var(--error); border: 1px solid #fecaca; }
-.badge-pending_approval { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-.table-action { background: none; border: none; cursor: pointer; color: var(--blue); font-size: 12px; font-weight: 600; font-family: inherit; padding: 5px 10px; border-radius: 4px; transition: background 0.15s; }
-.table-action:hover { background: #eff6ff; }
-.table-action.danger { color: var(--error); }
-.table-action.danger:hover { background: #fef2f2; }
-.table-action.green { color: var(--success); }
-.table-action.green:hover { background: #f0fdf4; }
-.admin-search { display: flex; gap: 12px; margin-bottom: 16px; }
-.admin-search input { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 3px; font-family: inherit; font-size: 14px; outline: none; }
-.admin-search input:focus { border-color: var(--navy); }
-.admin-search-btn { padding: 9px 18px; background: var(--navy); color: #fff; border: none; border-radius: 3px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
-.admin-tab-content { display: none; }
-.admin-tab-content.active { display: block; }
+#adminPage{background:#f0f2f5;}
+.admin-layout{display:flex;flex:1;overflow:hidden;min-height:calc(100vh - 64px);}
+.admin-sidebar{width:240px;background:var(--navy);flex-shrink:0;display:flex;flex-direction:column;padding:24px 0;}
+.sidebar-section{margin-bottom:8px;}
+.sidebar-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 20px;margin-bottom:4px;font-weight:600;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:rgba(255,255,255,.6);font-size:14px;font-weight:500;transition:background .15s,color .15s;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+.sidebar-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.sidebar-item.active{background:rgba(255,255,255,.1);color:#fff;border-right:3px solid var(--gold);}
+.sidebar-icon{font-size:16px;width:20px;text-align:center;}
+.sidebar-badge{background:var(--error);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:auto;}
+.sidebar-spacer{flex:1;}
+.sidebar-user{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.sidebar-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.sidebar-user-name{font-size:13px;color:#fff;font-weight:600;}
+.sidebar-user-role{font-size:11px;color:rgba(255,255,255,.4);}
+.admin-main{flex:1;overflow-y:auto;padding:32px 36px;}
+.admin-header{margin-bottom:28px;}
+.admin-header h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--navy);}
+.admin-header p{font-size:14px;color:var(--muted);margin-top:4px;}
+.admin-breadcrumb{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.admin-breadcrumb span{color:var(--navy);font-weight:500;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:24px 20px;}
+.stat-card-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-card-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);line-height:1;}
+.stat-card-sub{font-size:12px;color:var(--muted);margin-top:6px;}
+.stat-card-sub.urgent{color:var(--error);font-weight:600;}
+.admin-card{background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:24px;overflow:hidden;}
+.admin-card-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.admin-card-title{font-size:15px;font-weight:700;color:var(--navy);}
+.admin-card-action{font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;font-family:inherit;}
+.pending-alert{background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.pending-alert-text{font-size:14px;color:#9a3412;font-weight:500;}
+.pending-alert-text strong{color:#7c2d12;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:10px 24px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface);border-bottom:1px solid var(--border);}
+td{padding:13px 24px;font-size:14px;border-bottom:1px solid #f0ede8;color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafaf8;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-active{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0;}
+.badge-pending{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.badge-suspended{background:#fef2f2;color:var(--error);border:1px solid #fecaca;}
+.badge-cleared{background:#f0fdf4;color:var(--success);border:1px solid #bbf7d0;}
+.badge-approved{background:#eff6ff;color:var(--blue);border:1px solid #bfdbfe;}
+.badge-rejected{background:#fef2f2;color:var(--error);border:1px solid #fecaca;}
+.badge-pending_approval{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.table-action{background:none;border:none;cursor:pointer;color:var(--blue);font-size:12px;font-weight:600;font-family:inherit;padding:5px 10px;border-radius:4px;transition:background .15s;}
+.table-action:hover{background:#eff6ff;}
+.table-action.danger{color:var(--error);}
+.table-action.danger:hover{background:#fef2f2;}
+.table-action.green{color:var(--success);}
+.table-action.green:hover{background:#f0fdf4;}
+.admin-search{display:flex;gap:12px;margin-bottom:16px;}
+.admin-search input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:3px;font-family:inherit;font-size:14px;outline:none;}
+.admin-search input:focus{border-color:var(--navy);}
+.admin-search-btn{padding:9px 18px;background:var(--navy);color:#fff;border:none;border-radius:3px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+.admin-tab-content{display:none;}
+.admin-tab-content.active{display:block;}
 
 /* MODALS */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--white); border-radius: 6px; width: 460px; padding: 36px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
-.modal h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 6px; }
-.modal > p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-.modal-btns { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
-.modal-btn { padding: 10px 20px; border-radius: 3px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
-.modal-btn-cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
-.modal-btn-navy { background: var(--navy); color: #fff; }
-.modal-btn-green { background: var(--success); color: #fff; }
-.send-warning { background: #fff7ed; border: 1px solid #fed7aa; color: #92400e; padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-bottom: 16px; display: none; }
-.send-warning.show { display: block; }
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--white);border-radius:8px;width:460px;padding:36px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:6px;}
+.modal>p{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.modal-btns{display:flex;gap:12px;justify-content:flex-end;margin-top:24px;}
+.modal-btn{padding:10px 20px;border-radius:3px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;}
+.modal-btn-cancel{background:var(--surface);color:var(--muted);border:1px solid var(--border);}
+.modal-btn-navy{background:var(--navy);color:#fff;}
+.modal-btn-green{background:var(--success);color:#fff;}
+.modal-btn-gold{background:var(--gold);color:var(--navy);}
+.send-warning{background:#fff7ed;border:1px solid #fed7aa;color:#92400e;padding:10px 14px;border-radius:4px;font-size:13px;margin-bottom:16px;display:none;}
+.send-warning.show{display:block;}
 
-/* LOADING */
-.loading-overlay { position: fixed; inset: 0; background: rgba(10,35,66,0.88); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 16px; }
-.loading-overlay.show { display: flex; }
-.spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-overlay p { color: rgba(255,255,255,0.7); font-size: 14px; }
+/* LOADING + TOAST */
+.loading-overlay{position:fixed;inset:0;background:rgba(10,35,66,.88);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;}
+.loading-overlay.show{display:flex;}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-overlay p{color:rgba(255,255,255,.7);font-size:14px;}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--navy);color:#fff;padding:14px 20px;border-radius:6px;font-size:14px;font-weight:500;display:none;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.2);z-index:2000;}
+.toast.show{display:flex;animation:slideIn .3s ease;}
+.toast.success{background:var(--success);}
+.toast.error{background:var(--error);}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
-/* TOAST */
-.toast { position: fixed; bottom: 28px; right: 28px; background: var(--navy); color: #fff; padding: 14px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 2000; }
-.toast.show { display: flex; animation: slideIn 0.3s ease; }
-.toast.success { background: var(--success); }
-.toast.error { background: var(--error); }
-@keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-@media (max-width: 860px) {
-  .auth-left { display: none; } .auth-right { width: 100%; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .user-dash-grid { grid-template-columns: 1fr; }
-  .portal-nav, .fdic-strip { padding-left: 20px; padding-right: 20px; }
-  .user-dash-header, .user-dash-body { padding-left: 20px; padding-right: 20px; }
-  .admin-sidebar { width: 52px; }
-  .sidebar-label, .sidebar-item > span:not(.sidebar-icon), .sidebar-badge, .sidebar-user-name, .sidebar-user-role { display: none; }
+@media(max-width:860px){
+  .auth-left{display:none;}.auth-right{width:100%;}
+  .stats-grid,.overview-top,.portfolio-grid,.credit-stats,.loan-stats{grid-template-columns:1fr 1fr;}
+  .overview-grid{grid-template-columns:1fr;}
+  .portal-nav,.fdic-strip{padding-left:20px;padding-right:20px;}
+  .user-dash-header,.tab-panel{padding-left:20px;padding-right:20px;}
+  .acc-tabs{padding:0 20px;overflow-x:auto;}
+  .admin-sidebar{width:52px;}
+  .sidebar-label,.sidebar-item>span:not(.sidebar-icon),.sidebar-badge,.sidebar-user-name,.sidebar-user-role{display:none;}
 }
 </style>
 </head>
@@ -208,13 +316,10 @@ tr:hover td { background: #fafaf8; }
   <p id="loadingMsg">Loading...</p>
 </div>
 
-<!-- ══════════ LOGIN ══════════ -->
+<!-- ═══════════ LOGIN ═══════════ -->
 <div class="page active" id="loginPage">
   <nav class="portal-nav">
-    <div class="nav-logo">
-      <div class="logo-mark">Y</div>
-      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Secure Portal</span></div>
-    </div>
+    <div class="nav-logo"><div class="logo-mark">Y</div><div class="logo-text">Yepcoin Bank <span class="logo-sub">Secure Portal</span></div></div>
     <div class="nav-right">
       <button class="nav-link" onclick="window.location.href='index.html'">← Back to Site</button>
       <span class="nav-badge">256-bit SSL</span>
@@ -222,61 +327,37 @@ tr:hover td { background: #fafaf8; }
   </nav>
   <div class="auth-wrapper">
     <div class="auth-left">
-      <div class="auth-left-geo">
-        <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
-          <circle cx="500" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/>
-          <circle cx="500" cy="350" r="250" fill="none" stroke="white" stroke-width="1"/>
-          <circle cx="500" cy="350" r="150" fill="none" stroke="white" stroke-width="1"/>
-          <line x1="0" y1="0" x2="600" y2="700" stroke="white" stroke-width="1"/>
-        </svg>
-      </div>
+      <div class="auth-left-geo"><svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice"><circle cx="500" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/><circle cx="500" cy="350" r="250" fill="none" stroke="white" stroke-width="1"/><line x1="0" y1="0" x2="600" y2="700" stroke="white" stroke-width="1"/></svg></div>
       <div class="auth-left-content">
         <h2>Welcome back to <em>Yepcoin Bank.</em></h2>
-        <p>Access your accounts, manage transfers, and stay in control of your finances — all in one place.</p>
+        <p>Your complete financial hub — checking, savings, investing, credit, and loans all in one place.</p>
         <div class="auth-features">
-          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Real-time balance & transactions</span></div>
           <div class="auth-feature"><div class="auth-feature-dot"></div><span>$200 welcome balance on signup</span></div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Transfers over $1,000 reviewed by admin</span></div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div><span>FDIC insured up to $250,000</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>4.85% APY high-yield savings</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Stock portfolio & investing</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Credit cards & personal loans</span></div>
         </div>
       </div>
     </div>
     <div class="auth-right">
       <div class="form-title">Sign In</div>
-      <div class="form-subtitle">Enter your credentials to access your account.</div>
+      <div class="form-subtitle">Access your Yepcoin Bank account.</div>
       <div class="alert error" id="loginError"></div>
-      <div class="form-group">
-        <label class="form-label">Email Address</label>
-        <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="loginPassword" placeholder="••••••••">
-      </div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="loginPassword" placeholder="••••••••"></div>
       <button class="form-btn" onclick="handleLogin()">Sign In to My Account</button>
       <div class="form-divider"><span>or</span></div>
-      <div class="form-switch">
-        Don't have an account?
-        <button class="form-switch-link" onclick="showPage('registerPage')">Open an account →</button>
-      </div>
-      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7;">
-        🔒 Your connection is encrypted and secured.<br>Admin access: use <strong>admin</strong> as the email.
-      </div>
+      <div class="form-switch">Don't have an account? <button class="form-switch-link" onclick="showPage('registerPage')">Open an account →</button></div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:1.7;">🔒 Encrypted & secured. Admin login: use <strong>admin</strong> as email.</div>
     </div>
   </div>
-  <div class="fdic-strip">
-    <span class="fdic-badge">FDIC</span>
-    <span>Member FDIC. Deposits insured up to $250,000. © 2026 Yepcoin Bank, N.A.</span>
-  </div>
+  <div class="fdic-strip"><span class="fdic-badge">FDIC</span><span>Member FDIC. Deposits insured up to $250,000. © 2026 Yepcoin Bank, N.A.</span></div>
 </div>
 
-<!-- ══════════ REGISTER ══════════ -->
+<!-- ═══════════ REGISTER ═══════════ -->
 <div class="page" id="registerPage">
   <nav class="portal-nav">
-    <div class="nav-logo">
-      <div class="logo-mark">Y</div>
-      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Open an Account</span></div>
-    </div>
+    <div class="nav-logo"><div class="logo-mark">Y</div><div class="logo-text">Yepcoin Bank <span class="logo-sub">Open an Account</span></div></div>
     <div class="nav-right">
       <button class="nav-link" onclick="window.location.href='index.html'">← Back to Site</button>
       <button class="nav-link" onclick="showPage('loginPage')">Already have an account? Sign in</button>
@@ -284,26 +365,21 @@ tr:hover td { background: #fafaf8; }
   </nav>
   <div class="auth-wrapper">
     <div class="auth-left">
-      <div class="auth-left-geo">
-        <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice">
-          <circle cx="100" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/>
-          <circle cx="100" cy="350" r="250" fill="none" stroke="white" stroke-width="1"/>
-        </svg>
-      </div>
+      <div class="auth-left-geo"><svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice"><circle cx="100" cy="350" r="350" fill="none" stroke="white" stroke-width="1"/><circle cx="100" cy="350" r="200" fill="none" stroke="white" stroke-width="1"/></svg></div>
       <div class="auth-left-content">
         <h2>Start banking with <em>confidence.</em></h2>
-        <p>Open your Yepcoin Bank account in minutes. You'll receive a <strong style="color:var(--gold-light);">$200 welcome balance</strong> — on us.</p>
+        <p>Open your account in minutes. You'll receive a <strong style="color:var(--gold-light)">$200 welcome balance</strong> and instant access to all products.</p>
         <div class="auth-features">
           <div class="auth-feature"><div class="auth-feature-dot"></div><span>$200 starting balance, instantly</span></div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Send money to any Yepcoin customer</span></div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Real-time transaction history</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Checking, savings, investing & more</span></div>
+          <div class="auth-feature"><div class="auth-feature-dot"></div><span>Apply for credit cards & loans</span></div>
           <div class="auth-feature"><div class="auth-feature-dot"></div><span>No monthly fees, ever</span></div>
         </div>
       </div>
     </div>
     <div class="auth-right" style="padding-top:40px;padding-bottom:40px;">
       <div class="form-title">Open an Account</div>
-      <div class="form-subtitle">Takes 2 minutes. You'll start with $200.00.</div>
+      <div class="form-subtitle">Takes 2 minutes. Starts with $200.00.</div>
       <div class="alert error" id="registerError"></div>
       <div class="alert success" id="registerSuccess"></div>
       <div class="form-row">
@@ -313,41 +389,20 @@ tr:hover td { background: #fafaf8; }
       <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="regEmail" placeholder="you@example.com"></div>
       <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" id="regPhone" placeholder="(555) 000-0000"></div>
       <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" id="regDob"></div>
-      <div class="form-group">
-        <label class="form-label">Account Type</label>
-        <select class="form-input" id="regType">
-          <option value="Checking">Free Checking</option>
-          <option value="Savings">High-Yield Savings</option>
-          <option value="Checking + Savings">Checking + Savings Bundle</option>
-        </select>
-      </div>
       <div class="form-group"><label class="form-label">Create Password</label><input class="form-input" type="password" id="regPassword" placeholder="Min. 8 characters"></div>
       <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" type="password" id="regConfirm" placeholder="Repeat password"></div>
-      <div style="margin-bottom:16px;">
-        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;line-height:1.5;">
-          <input type="checkbox" id="regTerms" style="accent-color:var(--navy);margin-top:3px;flex-shrink:0;">
-          I agree to Yepcoin Bank's Terms of Service and Privacy Policy. I am at least 18 years old.
-        </label>
-      </div>
+      <div style="margin-bottom:16px;"><label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;line-height:1.5;"><input type="checkbox" id="regTerms" style="accent-color:var(--navy);margin-top:3px;flex-shrink:0;">I agree to Yepcoin Bank's Terms of Service and Privacy Policy. I am at least 18 years old.</label></div>
       <button class="form-btn" onclick="handleRegister()">Create My Account — Get $200</button>
-      <div class="form-switch" style="margin-top:16px;">
-        Already have an account? <button class="form-switch-link" onclick="showPage('loginPage')">Sign in →</button>
-      </div>
+      <div class="form-switch" style="margin-top:16px;">Already have an account? <button class="form-switch-link" onclick="showPage('loginPage')">Sign in →</button></div>
     </div>
   </div>
-  <div class="fdic-strip">
-    <span class="fdic-badge">FDIC</span>
-    <span>Member FDIC. © 2026 Yepcoin Bank, N.A. Equal Housing Lender.</span>
-  </div>
+  <div class="fdic-strip"><span class="fdic-badge">FDIC</span><span>Member FDIC. © 2026 Yepcoin Bank, N.A.</span></div>
 </div>
 
-<!-- ══════════ USER DASHBOARD ══════════ -->
+<!-- ═══════════ USER DASHBOARD ═══════════ -->
 <div class="page" id="userPage">
   <nav class="portal-nav">
-    <div class="nav-logo">
-      <div class="logo-mark">Y</div>
-      <div class="logo-text">Yepcoin Bank <span class="logo-sub">My Account</span></div>
-    </div>
+    <div class="nav-logo"><div class="logo-mark">Y</div><div class="logo-text">Yepcoin Bank <span class="logo-sub">My Account</span></div></div>
     <div class="nav-right">
       <span class="nav-badge" id="userAccTypeBadge">Checking</span>
       <button class="nav-link" onclick="handleLogout()">Sign Out</button>
@@ -357,44 +412,175 @@ tr:hover td { background: #fafaf8; }
     <div class="user-dash-header">
       <div class="user-welcome">Good day,</div>
       <div class="user-name-display" id="userNameDisplay">—</div>
-      <div class="user-balance-card">
-        <div>
-          <div class="balance-label">Available Balance</div>
-          <div class="balance-amount" id="userBalanceDisplay">$0.00</div>
-          <div class="balance-type" id="userAccTypeDisplay">Checking Account</div>
-        </div>
-        <div class="balance-actions">
-          <button class="bal-btn bal-btn-primary" onclick="openSendModal()">↑ Send Money</button>
-          <button class="bal-btn bal-btn-ghost" onclick="refreshUserDash()">↻ Refresh</button>
-        </div>
+      <div class="acc-tabs">
+        <button class="acc-tab active" onclick="switchTab(this,'overview')">📊 Overview</button>
+        <button class="acc-tab" onclick="switchTab(this,'checking')">🏦 Checking</button>
+        <button class="acc-tab" onclick="switchTab(this,'savings')">💰 Savings</button>
+        <button class="acc-tab" onclick="switchTab(this,'investing')">📈 Investing</button>
+        <button class="acc-tab" onclick="switchTab(this,'credit')">💳 Credit Card</button>
+        <button class="acc-tab" onclick="switchTab(this,'loans')">📋 Loans</button>
       </div>
     </div>
     <div class="user-dash-body">
-      <div class="user-dash-grid">
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">Transaction History</div></div>
-          <div id="userTxList"><div class="empty-state">No transactions yet.</div></div>
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="panel-overview">
+        <div class="overview-top">
+          <div class="bal-card checking" onclick="switchTabByName('checking')">
+            <div class="bal-card-icon">🏦</div>
+            <div class="bal-card-label">Checking</div>
+            <div class="bal-card-amount" id="ovCheckBal">$0.00</div>
+            <div class="bal-card-sub">Available balance</div>
+          </div>
+          <div class="bal-card savings" onclick="switchTabByName('savings')">
+            <div class="bal-card-icon">💰</div>
+            <div class="bal-card-label">Savings</div>
+            <div class="bal-card-amount" id="ovSavBal">$0.00</div>
+            <div class="bal-card-sub green" id="ovSavApy">4.85% APY</div>
+          </div>
+          <div class="bal-card investing" onclick="switchTabByName('investing')">
+            <div class="bal-card-icon">📈</div>
+            <div class="bal-card-label">Portfolio Value</div>
+            <div class="bal-card-amount" id="ovInvBal">$0.00</div>
+            <div class="bal-card-sub" id="ovInvChange">—</div>
+          </div>
+          <div class="bal-card credit" onclick="switchTabByName('credit')">
+            <div class="bal-card-icon">💳</div>
+            <div class="bal-card-label">Credit Card</div>
+            <div class="bal-card-amount negative" id="ovCreditOwed">$0.00</div>
+            <div class="bal-card-sub" id="ovCreditAvail">No card yet</div>
+          </div>
         </div>
-        <div class="dash-card">
-          <div class="dash-card-header"><div class="dash-card-title">⏳ Pending Approvals</div></div>
-          <div id="userPendingList"><div class="empty-state">No pending transactions.</div></div>
+        <div class="overview-actions">
+          <button class="action-btn" onclick="openSendModal()"><span>↑</span> Send Money</button>
+          <button class="action-btn" onclick="openSavingsDeposit()"><span>💰</span> Add to Savings</button>
+          <button class="action-btn" onclick="openBuyStock()"><span>📈</span> Buy Stock</button>
+          <button class="action-btn" onclick="openLoanApply()"><span>📋</span> Apply for Loan</button>
+          <button class="action-btn" onclick="refreshAllData()"><span>↻</span> Refresh</button>
+        </div>
+        <div class="overview-grid">
+          <div class="dash-card">
+            <div class="dash-card-header"><div class="dash-card-title">Recent Transactions</div></div>
+            <div id="ovTxList"><div class="empty-state">No transactions yet.</div></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-header"><div class="dash-card-title">⏳ Pending Approvals</div></div>
+            <div id="ovPendingList"><div class="empty-state">No pending transactions.</div></div>
+          </div>
         </div>
       </div>
+
+      <!-- CHECKING -->
+      <div class="tab-panel" id="panel-checking">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Checking Account</div>
+            <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--navy);line-height:1;" id="checkBalBig">$0.00</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:6px;" id="checkAccType">Checking Account</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="action-btn" onclick="openSendModal()"><span>↑</span> Send Money</button>
+            <button class="action-btn" onclick="refreshAllData()"><span>↻</span> Refresh</button>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-header"><div class="dash-card-title">Transaction History</div></div>
+          <div id="checkTxList"><div class="empty-state">No transactions yet.</div></div>
+        </div>
+      </div>
+
+      <!-- SAVINGS -->
+      <div class="tab-panel" id="panel-savings">
+        <div class="savings-hero">
+          <div>
+            <h3>High-Yield Savings</h3>
+            <p>Your money earns interest daily. Transfer funds in anytime from your checking account.</p>
+            <div class="savings-actions">
+              <button class="sav-btn sav-btn-primary" onclick="openSavingsDeposit()">+ Deposit</button>
+              <button class="sav-btn sav-btn-ghost" onclick="openSavingsWithdraw()">− Withdraw</button>
+            </div>
+          </div>
+          <div class="savings-bal">
+            <div class="savings-bal-label">Savings Balance</div>
+            <div class="savings-bal-amount" id="savBalBig">$0.00</div>
+            <div class="savings-bal-apy" id="savApyDisplay">4.85% APY</div>
+          </div>
+        </div>
+        <div class="interest-card">
+          <div>
+            <div class="int-stat-label">Interest Earned</div>
+            <div class="int-stat-val green" id="savInterestEarned">$0.00</div>
+          </div>
+          <div>
+            <div class="int-stat-label">Current APY</div>
+            <div class="int-stat-val" id="savApyStat">4.85%</div>
+          </div>
+          <div>
+            <div class="int-stat-label">Est. Monthly Earn</div>
+            <div class="int-stat-val green" id="savMonthlyEst">$0.00</div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-header"><div class="dash-card-title">Savings Transaction History</div></div>
+          <div id="savTxList"><div class="empty-state">No savings transactions yet.</div></div>
+        </div>
+      </div>
+
+      <!-- INVESTING -->
+      <div class="tab-panel" id="panel-investing">
+        <div class="invest-hero">
+          <div>
+            <h3>Investment Portfolio</h3>
+            <p>Buy and sell stocks directly from your Yepcoin Bank account. Funds come from your checking balance.</p>
+            <div class="invest-actions">
+              <button class="inv-btn inv-btn-primary" onclick="openBuyStock()">+ Buy Stock</button>
+              <button class="inv-btn inv-btn-ghost" onclick="openSellStock()">− Sell Stock</button>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;">Portfolio Value</div>
+            <div style="font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:#fff;" id="invTotalVal">$0.00</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:4px;" id="invTotalChange">—</div>
+          </div>
+        </div>
+        <div class="portfolio-grid" id="portfolioGrid">
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--muted);font-size:14px;grid-column:span 2;">No investments yet. Buy your first stock to get started.</div>
+        </div>
+      </div>
+
+      <!-- CREDIT CARD -->
+      <div class="tab-panel" id="panel-credit">
+        <div id="creditPanelContent">
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:48px;text-align:center;max-width:500px;margin:0 auto;">
+            <div style="font-size:40px;margin-bottom:16px;">💳</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--navy);margin-bottom:10px;">Apply for a Yepcoin Credit Card</div>
+            <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px;">Get instant access to a $2,000 credit limit with no annual fee. Use it anywhere and track your spending in real-time.</div>
+            <button class="form-btn" style="max-width:260px;margin:0 auto;" onclick="applyForCard()">Apply Now — Instant Decision</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOANS -->
+      <div class="tab-panel" id="panel-loans">
+        <div class="loan-hero">
+          <div>
+            <h3>Loans & Financing</h3>
+            <p>Apply for personal, auto, or home loans with competitive rates. Funds deposited directly to your checking account.</p>
+          </div>
+          <button class="loan-btn" onclick="openLoanApply()">+ Apply for Loan</button>
+        </div>
+        <div id="loansContent"><div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--muted);font-size:14px;">No active loans. Apply above to get started.</div></div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- ══════════ ADMIN ══════════ -->
+<!-- ═══════════ ADMIN ═══════════ -->
 <div class="page" id="adminPage">
   <nav class="portal-nav">
-    <div class="nav-logo">
-      <div class="logo-mark">Y</div>
-      <div class="logo-text">Yepcoin Bank <span class="logo-sub">Admin Console</span></div>
-    </div>
-    <div class="nav-right">
-      <span class="nav-badge">Admin Access</span>
-      <button class="nav-link" onclick="handleLogout()">Sign Out</button>
-    </div>
+    <div class="nav-logo"><div class="logo-mark">Y</div><div class="logo-text">Yepcoin Bank <span class="logo-sub">Admin Console</span></div></div>
+    <div class="nav-right"><span class="nav-badge">Admin Access</span><button class="nav-link" onclick="handleLogout()">Sign Out</button></div>
   </nav>
   <div class="admin-layout">
     <div class="admin-sidebar">
@@ -404,73 +590,60 @@ tr:hover td { background: #fafaf8; }
         <button class="sidebar-item" onclick="setTab(this,'approvals')"><span class="sidebar-icon">⏳</span><span>Approvals</span><span class="sidebar-badge" id="approvalBadge" style="display:none">0</span></button>
         <button class="sidebar-item" onclick="setTab(this,'customers')"><span class="sidebar-icon">👥</span><span>Customers</span></button>
         <button class="sidebar-item" onclick="setTab(this,'transactions')"><span class="sidebar-icon">💳</span><span>Transactions</span></button>
+        <button class="sidebar-item" onclick="setTab(this,'loans_admin')"><span class="sidebar-icon">📋</span><span>Loans</span></button>
       </div>
       <div class="sidebar-spacer"></div>
-      <div class="sidebar-user">
-        <div class="sidebar-avatar">AD</div>
-        <div><div class="sidebar-user-name">Admin</div><div class="sidebar-user-role">Super Admin</div></div>
-      </div>
+      <div class="sidebar-user"><div class="sidebar-avatar">AD</div><div><div class="sidebar-user-name">Admin</div><div class="sidebar-user-role">Super Admin</div></div></div>
     </div>
     <div class="admin-main">
-
-      <!-- DASHBOARD -->
       <div class="admin-tab-content active" id="tab-overview">
         <div class="admin-breadcrumb">Admin Console <span>→ Dashboard</span></div>
         <div class="admin-header"><h1>Dashboard</h1><p>Live data from Supabase.</p></div>
         <div id="pendingAlertBox"></div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-card-label">Total Customers</div><div class="stat-card-val" id="statCustomers">—</div><div class="stat-card-sub">Registered accounts</div></div>
-          <div class="stat-card"><div class="stat-card-label">Total Balances</div><div class="stat-card-val" id="statDeposits">—</div><div class="stat-card-sub">Sum of all balances</div></div>
+          <div class="stat-card"><div class="stat-card-label">Customers</div><div class="stat-card-val" id="statCustomers">—</div><div class="stat-card-sub">Registered</div></div>
+          <div class="stat-card"><div class="stat-card-label">Total Balances</div><div class="stat-card-val" id="statDeposits">—</div><div class="stat-card-sub">Checking + Savings</div></div>
           <div class="stat-card"><div class="stat-card-label">Transactions</div><div class="stat-card-val" id="statTx">—</div><div class="stat-card-sub">All time</div></div>
-          <div class="stat-card"><div class="stat-card-label">Pending Approval</div><div class="stat-card-val" id="statPending">—</div><div class="stat-card-sub" id="statPendingSub">Awaiting review</div></div>
+          <div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-val" id="statPending">—</div><div class="stat-card-sub" id="statPendingSub">Awaiting review</div></div>
         </div>
         <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-title">Recent Registrations</div>
-            <button class="admin-card-action" onclick="setTabByName('customers')">View all →</button>
-          </div>
-          <table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Balance</th><th>Status</th><th>Joined</th></tr></thead>
-          <tbody id="recentRegBody"></tbody></table>
+          <div class="admin-card-header"><div class="admin-card-title">Recent Registrations</div><button class="admin-card-action" onclick="setTabByName('customers')">View all →</button></div>
+          <table><thead><tr><th>Name</th><th>Email</th><th>Checking</th><th>Savings</th><th>Status</th><th>Joined</th></tr></thead><tbody id="recentRegBody"></tbody></table>
         </div>
       </div>
-
-      <!-- APPROVALS -->
       <div class="admin-tab-content" id="tab-approvals">
         <div class="admin-breadcrumb">Admin Console <span>→ Approvals</span></div>
-        <div class="admin-header"><h1>Pending Approvals</h1><p>Transactions over $1,000 are held here until you approve or reject them.</p></div>
+        <div class="admin-header"><h1>Pending Approvals</h1><p>Transfers over $1,000 held here until reviewed.</p></div>
         <div class="admin-card">
           <div class="admin-card-header"><div class="admin-card-title">Awaiting Review</div></div>
-          <table><thead><tr><th>From</th><th>To</th><th>Amount</th><th>Note</th><th>Submitted</th><th>Actions</th></tr></thead>
-          <tbody id="approvalsBody"></tbody></table>
+          <table><thead><tr><th>From</th><th>To</th><th>Amount</th><th>Note</th><th>Date</th><th>Actions</th></tr></thead><tbody id="approvalsBody"></tbody></table>
         </div>
       </div>
-
-      <!-- CUSTOMERS -->
       <div class="admin-tab-content" id="tab-customers">
         <div class="admin-breadcrumb">Admin Console <span>→ Customers</span></div>
-        <div class="admin-header"><h1>Customer Management</h1><p>View balances, credit accounts, and manage customer status.</p></div>
-        <div class="admin-search">
-          <input type="text" id="userSearch" placeholder="Search by name or email..." oninput="filterCustomers()">
-          <button class="admin-search-btn" onclick="filterCustomers()">Search</button>
-        </div>
+        <div class="admin-header"><h1>Customer Management</h1><p>View balances across all accounts, credit, suspend, or delete.</p></div>
+        <div class="admin-search"><input type="text" id="userSearch" placeholder="Search by name or email..." oninput="filterCustomers()"><button class="admin-search-btn">Search</button></div>
         <div class="admin-card">
           <div class="admin-card-header"><div class="admin-card-title">All Customers</div><div style="font-size:13px;color:var(--muted);" id="userCountLabel"></div></div>
-          <table><thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="customersBody"></tbody></table>
+          <table><thead><tr><th>Name</th><th>Email</th><th>Checking</th><th>Savings</th><th>Status</th><th>Actions</th></tr></thead><tbody id="customersBody"></tbody></table>
         </div>
       </div>
-
-      <!-- TRANSACTIONS -->
       <div class="admin-tab-content" id="tab-transactions">
         <div class="admin-breadcrumb">Admin Console <span>→ Transactions</span></div>
         <div class="admin-header"><h1>Transaction Ledger</h1><p>Full audit trail of all transactions.</p></div>
         <div class="admin-card">
           <div class="admin-card-header"><div class="admin-card-title">All Transactions</div></div>
-          <table><thead><tr><th>From</th><th>To</th><th>Type</th><th>Amount</th><th>Status</th><th>Note</th><th>Date</th></tr></thead>
-          <tbody id="allTxBody"></tbody></table>
+          <table><thead><tr><th>From</th><th>To</th><th>Type</th><th>Amount</th><th>Status</th><th>Note</th><th>Date</th></tr></thead><tbody id="allTxBody"></tbody></table>
         </div>
       </div>
-
+      <div class="admin-tab-content" id="tab-loans_admin">
+        <div class="admin-breadcrumb">Admin Console <span>→ Loans</span></div>
+        <div class="admin-header"><h1>Loan Applications</h1><p>Review and action pending loan requests.</p></div>
+        <div class="admin-card">
+          <div class="admin-card-header"><div class="admin-card-title">All Loans</div></div>
+          <table><thead><tr><th>Customer</th><th>Type</th><th>Amount</th><th>Remaining</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead><tbody id="loansAdminBody"></tbody></table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -479,16 +652,115 @@ tr:hover td { background: #fafaf8; }
 <div class="modal-overlay" id="sendModal">
   <div class="modal">
     <h3>Send Money</h3>
-    <p>Transfer funds to any Yepcoin Bank customer. Transfers of $1,000 or more require admin approval.</p>
+    <p>Transfer funds from your checking account. Transfers of $1,000+ require admin approval.</p>
     <div class="alert error" id="sendError"></div>
-    <div class="send-warning" id="sendWarning">⚠️ This transfer will be held for admin approval before funds are released to the recipient.</div>
+    <div class="send-warning" id="sendWarning">⚠️ This transfer will be held for admin approval before funds reach the recipient.</div>
     <div class="form-group"><label class="form-label">Recipient Email</label><input class="form-input" type="email" id="sendEmail" placeholder="recipient@example.com"></div>
     <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" type="number" id="sendAmount" placeholder="0.00" min="0.01" step="0.01" oninput="checkSendAmount()"></div>
-    <div class="form-group"><label class="form-label">Note (optional)</label><input class="form-input" type="text" id="sendNote" placeholder="e.g. Rent, lunch, etc."></div>
-    <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeSendModal()">Cancel</button>
-      <button class="modal-btn modal-btn-navy" onclick="handleSend()">Send Money</button>
+    <div class="form-group"><label class="form-label">Note (optional)</label><input class="form-input" type="text" id="sendNote" placeholder="e.g. Rent, lunch..."></div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('sendModal')">Cancel</button><button class="modal-btn modal-btn-navy" onclick="handleSend()">Send Money</button></div>
+  </div>
+</div>
+
+<!-- SAVINGS DEPOSIT MODAL -->
+<div class="modal-overlay" id="savDepModal">
+  <div class="modal">
+    <h3>Deposit to Savings</h3>
+    <p>Transfer funds from your checking account into your high-yield savings account.</p>
+    <div class="alert error" id="savDepError"></div>
+    <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" type="number" id="savDepAmount" placeholder="0.00" min="0.01" step="0.01"></div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('savDepModal')">Cancel</button><button class="modal-btn modal-btn-green" onclick="handleSavingsDeposit()">Deposit</button></div>
+  </div>
+</div>
+
+<!-- SAVINGS WITHDRAW MODAL -->
+<div class="modal-overlay" id="savWithModal">
+  <div class="modal">
+    <h3>Withdraw from Savings</h3>
+    <p>Move funds back to your checking account.</p>
+    <div class="alert error" id="savWithError"></div>
+    <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" type="number" id="savWithAmount" placeholder="0.00" min="0.01" step="0.01"></div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('savWithModal')">Cancel</button><button class="modal-btn modal-btn-navy" onclick="handleSavingsWithdraw()">Withdraw</button></div>
+  </div>
+</div>
+
+<!-- BUY STOCK MODAL -->
+<div class="modal-overlay" id="buyStockModal">
+  <div class="modal">
+    <h3>Buy Stock</h3>
+    <p>Purchase shares using your checking balance. Prices are simulated.</p>
+    <div class="alert error" id="buyStockError"></div>
+    <div class="form-group">
+      <label class="form-label">Stock</label>
+      <select class="form-input" id="buyStockSymbol">
+        <option value="AAPL|Apple Inc.|182.52">AAPL — Apple Inc. ($182.52)</option>
+        <option value="GOOGL|Alphabet Inc.|175.98">GOOGL — Alphabet Inc. ($175.98)</option>
+        <option value="TSLA|Tesla Inc.|248.42">TSLA — Tesla Inc. ($248.42)</option>
+        <option value="MSFT|Microsoft Corp.|415.32">MSFT — Microsoft Corp. ($415.32)</option>
+        <option value="AMZN|Amazon.com Inc.|192.76">AMZN — Amazon.com ($192.76)</option>
+        <option value="NVDA|NVIDIA Corp.|875.40">NVDA — NVIDIA Corp. ($875.40)</option>
+        <option value="META|Meta Platforms|527.14">META — Meta Platforms ($527.14)</option>
+        <option value="SPY|S&P 500 ETF|521.03">SPY — S&P 500 ETF ($521.03)</option>
+      </select>
     </div>
+    <div class="form-group"><label class="form-label">Number of Shares</label><input class="form-input" type="number" id="buyShares" placeholder="1" min="0.01" step="0.01" oninput="calcBuyCost()"></div>
+    <div id="buyCostDisplay" style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">Enter shares to see total cost.</div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('buyStockModal')">Cancel</button><button class="modal-btn" style="background:var(--purple);color:#fff;" onclick="handleBuyStock()">Buy Shares</button></div>
+  </div>
+</div>
+
+<!-- SELL STOCK MODAL -->
+<div class="modal-overlay" id="sellStockModal">
+  <div class="modal">
+    <h3>Sell Stock</h3>
+    <p>Sell shares from your portfolio. Proceeds go to your checking account.</p>
+    <div class="alert error" id="sellStockError"></div>
+    <div class="form-group"><label class="form-label">Stock to Sell</label><select class="form-input" id="sellStockSelect"></select></div>
+    <div class="form-group"><label class="form-label">Shares to Sell</label><input class="form-input" type="number" id="sellShares" placeholder="1" min="0.01" step="0.01" oninput="calcSellProceeds()"></div>
+    <div id="sellProceedsDisplay" style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">Enter shares to see proceeds.</div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('sellStockModal')">Cancel</button><button class="modal-btn" style="background:var(--purple);color:#fff;" onclick="handleSellStock()">Sell Shares</button></div>
+  </div>
+</div>
+
+<!-- LOAN APPLY MODAL -->
+<div class="modal-overlay" id="loanModal">
+  <div class="modal">
+    <h3>Apply for a Loan</h3>
+    <p>Funds are deposited directly into your checking account upon approval.</p>
+    <div class="alert error" id="loanError"></div>
+    <div class="form-group">
+      <label class="form-label">Loan Type</label>
+      <select class="form-input" id="loanType">
+        <option value="Personal Loan">Personal Loan (6.49% APR)</option>
+        <option value="Auto Loan">Auto Loan (5.99% APR)</option>
+        <option value="Home Equity">Home Equity Loan (7.25% APR)</option>
+        <option value="Student Loan">Student Loan (4.99% APR)</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" type="number" id="loanAmount" placeholder="e.g. 5000" min="100" step="100" oninput="calcLoanPayment()"></div>
+    <div class="form-group">
+      <label class="form-label">Term</label>
+      <select class="form-input" id="loanTerm" onchange="calcLoanPayment()">
+        <option value="12">12 months</option>
+        <option value="24">24 months</option>
+        <option value="36">36 months</option>
+        <option value="48">48 months</option>
+        <option value="60">60 months</option>
+      </select>
+    </div>
+    <div id="loanPayDisplay" style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:13px;color:var(--muted);margin-bottom:8px;">Enter an amount to see your monthly payment.</div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('loanModal')">Cancel</button><button class="modal-btn modal-btn-gold" onclick="handleLoanApply()">Submit Application</button></div>
+  </div>
+</div>
+
+<!-- LOAN PAYMENT MODAL -->
+<div class="modal-overlay" id="loanPayModal">
+  <div class="modal">
+    <h3>Make a Payment</h3>
+    <p id="loanPayDesc">Pay toward your loan balance. Funds will be deducted from your checking account.</p>
+    <div class="alert error" id="loanPayError"></div>
+    <div class="form-group"><label class="form-label">Payment Amount ($)</label><input class="form-input" type="number" id="loanPayAmount" placeholder="0.00" min="0.01" step="0.01"></div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('loanPayModal')">Cancel</button><button class="modal-btn modal-btn-navy" onclick="handleLoanPayment()">Make Payment</button></div>
   </div>
 </div>
 
@@ -496,494 +768,674 @@ tr:hover td { background: #fafaf8; }
 <div class="modal-overlay" id="creditModal">
   <div class="modal">
     <h3>Credit Account</h3>
-    <p id="creditDesc">Add funds to this customer's account.</p>
+    <p id="creditDesc">Add funds directly to this customer's checking account.</p>
     <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" type="number" id="creditAmount" placeholder="0.00" min="0.01" step="0.01"></div>
     <div class="form-group"><label class="form-label">Note (optional)</label><input class="form-input" type="text" id="creditNote" placeholder="e.g. Welcome bonus"></div>
-    <div class="modal-btns">
-      <button class="modal-btn modal-btn-cancel" onclick="closeCreditModal()">Cancel</button>
-      <button class="modal-btn modal-btn-green" onclick="handleCredit()">Credit Account</button>
-    </div>
+    <div class="modal-btns"><button class="modal-btn modal-btn-cancel" onclick="closeModal('creditModal')">Cancel</button><button class="modal-btn modal-btn-green" onclick="handleCredit()">Credit Account</button></div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
 <script>
-const SUPA_URL = 'https://wbgcduxicwbqvlrqzvkd.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZ2NkdXhpY3dicXZscnF6dmtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDAxMjksImV4cCI6MjA5NDAxNjEyOX0.NconfhwDhQiGhiMQ_WKa9J3JuWnNv6AuIFW1cw_A810';
+const SUPA = 'https://wbgcduxicwbqvlrqzvkd.supabase.co';
+const KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndiZ2NkdXhpY3dicXZscnF6dmtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NDAxMjksImV4cCI6MjA5NDAxNjEyOX0.NconfhwDhQiGhiMQ_WKa9J3JuWnNv6AuIFW1cw_A810';
 const ADMIN_PASS = 'Ark720039483';
-const START_BAL = 200.00;
+const START_BAL  = 200;
 const APPROVAL_LIMIT = 1000;
+const STOCK_PRICES = {AAPL:182.52,GOOGL:175.98,TSLA:248.42,MSFT:415.32,AMZN:192.76,NVDA:875.40,META:527.14,SPY:521.03};
+const H = {'Content-Type':'application/json',apikey:KEY,Authorization:`Bearer ${KEY}`,Prefer:'return=representation'};
 
-const H = { 'Content-Type':'application/json', apikey: SUPA_KEY, Authorization:`Bearer ${SUPA_KEY}`, Prefer:'return=representation' };
-
-async function db(method, table, qs='', body=null) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}${qs}`, { method, headers: H, body: body ? JSON.stringify(body) : undefined });
-  const t = await r.text();
-  if (!r.ok) throw new Error(t);
-  return t ? JSON.parse(t) : [];
+async function db(method,table,qs='',body=null){
+  const r=await fetch(`${SUPA}/rest/v1/${table}${qs}`,{method,headers:H,body:body?JSON.stringify(body):undefined});
+  const t=await r.text();
+  if(!r.ok)throw new Error(t);
+  return t?JSON.parse(t):[];
 }
 
-let me = null;
-let allCustomers = [];
-let creditUserId = null;
+let me=null, mySavings=null, myCard=null, myLoans=[], myInvestments=[], allCustomers=[];
+let creditUserId=null, loanPayTargetId=null, loanPayTargetRemaining=0;
 
 // ── ROUTING ──
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-function load(show, msg='Loading...') {
-  document.getElementById('loadingOverlay').classList.toggle('show', show);
-  document.getElementById('loadingMsg').textContent = msg;
-}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function load(show,msg='Loading...'){document.getElementById('loadingOverlay').classList.toggle('show',show);document.getElementById('loadingMsg').textContent=msg;}
 
 // ── LOGIN ──
-async function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('loginPassword').value;
-  const err   = document.getElementById('loginError');
-  err.classList.remove('show');
-  if (!email || !pass) { showErr(err,'Please fill in all fields.'); return; }
-
-  if (email === 'admin' || email === 'admin@yepcoin.com') {
-    if (pass === ADMIN_PASS) {
-      load(true,'Loading admin console...');
-      await loadAdminData();
-      load(false);
-      showPage('adminPage');
-    } else { showErr(err,'Invalid admin password.'); }
+async function handleLogin(){
+  const email=el('loginEmail').value.trim().toLowerCase();
+  const pass=el('loginPassword').value;
+  const err=el('loginError'); err.classList.remove('show');
+  if(!email||!pass){showErr(err,'Please fill in all fields.');return;}
+  if(email==='admin'||email==='admin@yepcoin.com'){
+    if(pass===ADMIN_PASS){load(true,'Loading admin...');await loadAdminData();load(false);showPage('adminPage');}
+    else showErr(err,'Invalid admin password.');
     return;
   }
-
   load(true,'Signing in...');
-  try {
-    const rows = await db('GET','bank_users',`?email=eq.${enc(email)}&password=eq.${enc(pass)}&select=*`);
-    if (!rows.length) { load(false); showErr(err,'Invalid email or password.'); return; }
-    me = rows[0];
-    await loadUserDash();
-    load(false);
-    showPage('userPage');
-  } catch(e) { load(false); showErr(err,'Connection error. Try again.'); console.error(e); }
+  try{
+    const rows=await db('GET','bank_users',`?email=eq.${enc(email)}&password=eq.${enc(pass)}&select=*`);
+    if(!rows.length){load(false);showErr(err,'Invalid email or password.');return;}
+    me=rows[0];
+    await loadAllUserData();
+    load(false);showPage('userPage');
+  }catch(e){load(false);showErr(err,'Connection error.');console.error(e);}
 }
 
 // ── REGISTER ──
-async function handleRegister() {
-  const first = v('regFirst'), last = v('regLast'), email = v('regEmail').toLowerCase(),
-        phone = v('regPhone'), dob = v('regDob'), type = v('regType'),
-        pass  = v('regPassword'), conf = v('regConfirm');
-  const terms = document.getElementById('regTerms').checked;
-  const err = document.getElementById('registerError');
-  const ok  = document.getElementById('registerSuccess');
-  err.classList.remove('show'); ok.classList.remove('show');
-
-  if (!first||!last||!email||!phone||!dob||!pass||!conf) { showErr(err,'Please fill in all fields.'); return; }
-  if (pass.length < 8) { showErr(err,'Password must be at least 8 characters.'); return; }
-  if (pass !== conf)   { showErr(err,'Passwords do not match.'); return; }
-  if (!terms)          { showErr(err,'Please agree to the Terms of Service.'); return; }
-
+async function handleRegister(){
+  const first=v('regFirst'),last=v('regLast'),email=v('regEmail').toLowerCase(),
+        phone=v('regPhone'),dob=v('regDob'),pass=v('regPassword'),conf=v('regConfirm');
+  const terms=el('regTerms').checked;
+  const err=el('registerError'),ok=el('registerSuccess');
+  err.classList.remove('show');ok.classList.remove('show');
+  if(!first||!last||!email||!phone||!dob||!pass||!conf){showErr(err,'Please fill in all fields.');return;}
+  if(pass.length<8){showErr(err,'Password must be at least 8 characters.');return;}
+  if(pass!==conf){showErr(err,'Passwords do not match.');return;}
+  if(!terms){showErr(err,'Please agree to the Terms of Service.');return;}
   load(true,'Creating your account...');
-  try {
-    const exists = await db('GET','bank_users',`?email=eq.${enc(email)}&select=id`);
-    if (exists.length) { load(false); showErr(err,'An account with this email already exists.'); return; }
-
-    const newUsers = await db('POST','bank_users','',{
-      first, last, email, phone, dob, password: pass,
-      account_type: type, balance: START_BAL, status: 'active'
-    });
-    const nu = newUsers[0];
-
-    // Log welcome credit transaction
-    await db('POST','transactions','',{
-      to_user_id: nu.id, type:'Welcome Credit',
-      amount: START_BAL, status:'cleared', note:'Welcome to Yepcoin Bank!'
-    });
-
-    me = nu;
-    ok.textContent = `Account created! Your $${START_BAL.toFixed(2)} welcome balance is ready.`;
+  try{
+    const exists=await db('GET','bank_users',`?email=eq.${enc(email)}&select=id`);
+    if(exists.length){load(false);showErr(err,'Email already in use.');return;}
+    const nu=(await db('POST','bank_users','',{first,last,email,phone,dob,password:pass,account_type:'Checking',balance:START_BAL,status:'active'}))[0];
+    // Welcome tx
+    await db('POST','transactions','',{to_user_id:nu.id,type:'Welcome Credit',amount:START_BAL,status:'cleared',note:'Welcome to Yepcoin Bank!'});
+    // Create savings account (starts at 0)
+    await db('POST','savings_accounts','',{user_id:nu.id,balance:0,apy:4.85,interest_earned:0});
+    me=nu;
+    ok.textContent=`Account created! Your $${START_BAL.toFixed(2)} welcome balance is ready.`;
     ok.classList.add('show');
-    setTimeout(async () => {
-      await loadUserDash(); load(false); showPage('userPage');
-    }, 1400);
-  } catch(e) { load(false); showErr(err,'Registration failed. Please try again.'); console.error(e); }
+    setTimeout(async()=>{await loadAllUserData();load(false);showPage('userPage');},1400);
+  }catch(e){load(false);showErr(err,'Registration failed. Please try again.');console.error(e);}
 }
 
-// ── USER DASHBOARD ──
-async function loadUserDash() {
-  // Fresh balance
-  const fresh = await db('GET','bank_users',`?id=eq.${me.id}&select=*`);
-  if (fresh.length) me = fresh[0];
+// ── LOAD ALL USER DATA ──
+async function loadAllUserData(){
+  const [fresh,savRows,cardRows,loanRows,invRows]=await Promise.all([
+    db('GET','bank_users',`?id=eq.${me.id}&select=*`),
+    db('GET','savings_accounts',`?user_id=eq.${me.id}&select=*`),
+    db('GET','credit_cards',`?user_id=eq.${me.id}&select=*`),
+    db('GET','loans',`?user_id=eq.${me.id}&order=created_at.desc&select=*`),
+    db('GET','investments',`?user_id=eq.${me.id}&select=*`)
+  ]);
+  if(fresh.length) me=fresh[0];
+  mySavings=savRows[0]||null;
+  myCard=cardRows[0]||null;
+  myLoans=loanRows;
+  myInvestments=invRows;
 
-  document.getElementById('userNameDisplay').textContent    = `${me.first} ${me.last}`;
-  document.getElementById('userAccTypeBadge').textContent   = me.account_type;
-  document.getElementById('userAccTypeDisplay').textContent = me.account_type + ' Account';
-  document.getElementById('userBalanceDisplay').textContent = '$' + (+me.balance).toFixed(2);
+  // If no savings account yet (old user), create one
+  if(!mySavings){
+    const ns=(await db('POST','savings_accounts','',{user_id:me.id,balance:0,apy:4.85,interest_earned:0}))[0];
+    mySavings=ns;
+  }
 
-  try {
-    const sent = await db('GET','transactions',`?from_user_id=eq.${me.id}&order=created_at.desc&limit=30&select=*`);
-    const recv = await db('GET','transactions',`?to_user_id=eq.${me.id}&order=created_at.desc&limit=30&select=*`);
-
-    const all = [
-      ...sent.map(t=>({...t,_dir:'out'})),
-      ...recv.map(t=>({...t,_dir:'in'}))
-    ].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-
-    const cleared = all.filter(t=>t.status!=='pending_approval');
-    const pending = all.filter(t=>t.status==='pending_approval');
-
-    document.getElementById('userTxList').innerHTML =
-      cleared.length ? cleared.slice(0,15).map(txRow).join('') : '<div class="empty-state">No transactions yet.</div>';
-    document.getElementById('userPendingList').innerHTML =
-      pending.length ? pending.map(pendingRow).join('') : '<div class="empty-state">No pending transactions.</div>';
-  } catch(e) { console.error(e); }
+  renderUserDash();
 }
 
-function txRow(t) {
-  const isIn = t._dir==='in';
-  const icons = {'Welcome Credit':'🎁','Admin Credit':'🏦','Transfer': isIn?'↓':'↑'};
-  const icon = icons[t.type]||'↔';
-  const amt = (isIn?'+':'-') + '$' + (+t.amount).toFixed(2);
-  const cls = isIn ? 'tx-credit' : 'tx-debit';
-  return `<div class="tx-item">
-    <div class="tx-left">
-      <div class="tx-icon">${icon}</div>
-      <div>
-        <div class="tx-name">${t.type}</div>
-        <div class="tx-meta">${fmtDate(t.created_at)}${t.note?' · '+t.note:''}</div>
-      </div>
-    </div>
-    <div class="tx-right">
-      <div class="tx-amount ${cls}">${amt}</div>
-      <div class="tx-badge"><span class="badge badge-${t.status}">${fmtStatus(t.status)}</span></div>
-    </div>
-  </div>`;
-}
-
-function pendingRow(t) {
-  const isIn = t._dir==='in';
-  const amt = (isIn?'+':'-') + '$' + (+t.amount).toFixed(2);
-  const cls = isIn ? 'tx-credit' : 'tx-debit';
-  return `<div class="tx-item">
-    <div class="tx-left">
-      <div class="tx-icon">⏳</div>
-      <div>
-        <div class="tx-name">Transfer — Awaiting Admin Approval</div>
-        <div class="tx-meta">${fmtDate(t.created_at)}${t.note?' · '+t.note:''}</div>
-      </div>
-    </div>
-    <div class="tx-right">
-      <div class="tx-amount ${cls}">${amt}</div>
-      <div class="tx-badge"><span class="badge badge-pending_approval">Pending</span></div>
-    </div>
-  </div>`;
-}
-
-async function refreshUserDash() {
+async function refreshAllData(){
   load(true,'Refreshing...');
-  await loadUserDash();
+  await loadAllUserData();
   load(false);
   showToast('Account refreshed.','success');
 }
 
+// ── RENDER USER DASHBOARD ──
+function renderUserDash(){
+  el('userNameDisplay').textContent=`${me.first} ${me.last}`;
+  el('userAccTypeBadge').textContent=me.account_type;
+
+  // Overview cards
+  const checkBal=(+me.balance).toFixed(2);
+  const savBal=mySavings?(+mySavings.balance).toFixed(2):'0.00';
+  el('ovCheckBal').textContent='$'+checkBal;
+  el('checkBalBig').textContent='$'+checkBal;
+  el('checkAccType').textContent=me.account_type+' Account';
+  el('ovSavBal').textContent='$'+savBal;
+  el('savBalBig').textContent='$'+savBal;
+  if(mySavings){
+    el('savApyDisplay').textContent=mySavings.apy+'% APY';
+    el('savApyStat').textContent=mySavings.apy+'%';
+    el('ovSavApy').textContent=mySavings.apy+'% APY';
+    el('savInterestEarned').textContent='$'+(+mySavings.interest_earned).toFixed(2);
+    const monthly=((+mySavings.balance)*(mySavings.apy/100)/12).toFixed(2);
+    el('savMonthlyEst').textContent='$'+monthly;
+  }
+
+  // Portfolio value
+  let portVal=0,portCost=0;
+  myInvestments.forEach(inv=>{
+    const price=STOCK_PRICES[inv.symbol]||inv.avg_buy_price;
+    portVal+=(+inv.shares)*price;
+    portCost+=(+inv.shares)*(+inv.avg_buy_price);
+  });
+  const portGain=portVal-portCost;
+  el('ovInvBal').textContent='$'+portVal.toFixed(2);
+  el('invTotalVal').textContent='$'+portVal.toFixed(2);
+  const gainStr=(portGain>=0?'+':'')+portGain.toFixed(2);
+  const gainPct=portCost>0?((portGain/portCost)*100).toFixed(2):'0.00';
+  el('ovInvChange').textContent=portCost>0?`${gainStr} (${gainPct}%)`:'No positions yet';
+  el('invTotalChange').textContent=portCost>0?`${gainStr} (${gainPct}%)`:'No positions yet';
+
+  // Credit card
+  if(myCard){
+    const owed=(+myCard.balance_owed).toFixed(2);
+    const limit=(+myCard.credit_limit).toFixed(2);
+    const avail=((+myCard.credit_limit)-(+myCard.balance_owed)).toFixed(2);
+    el('ovCreditOwed').textContent='$'+owed;
+    el('ovCreditAvail').textContent='$'+avail+' available';
+    el('creditPanelContent').innerHTML=renderCreditPanel();
+  } else {
+    el('ovCreditOwed').textContent='No card';
+    el('ovCreditAvail').textContent='Apply now';
+  }
+
+  renderPortfolioGrid();
+  renderLoansPanel();
+  loadTxLists();
+}
+
+function renderCreditPanel(){
+  const owed=+myCard.balance_owed,limit=+myCard.credit_limit,avail=limit-owed;
+  const pct=Math.round((owed/limit)*100);
+  const fillClass=pct>80?'danger':pct>50?'warning':'';
+  const dueStr=myCard.due_date?new Date(myCard.due_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+  return `
+  <div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:24px;align-items:flex-start;">
+    <div class="credit-card-visual">
+      <div class="credit-card-top"><div class="credit-card-logo">Yepcoin Bank</div><div class="credit-card-chip"></div></div>
+      <div class="credit-card-number">•••• •••• •••• 4291</div>
+      <div class="credit-card-bottom">
+        <div><div class="credit-info-label">Card Holder</div><div class="credit-info-val">${me.first} ${me.last}</div></div>
+        <div><div class="credit-info-label">Status</div><div class="credit-info-val" style="text-transform:capitalize">${myCard.status}</div></div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div class="credit-stats">
+        <div class="credit-stat"><div class="credit-stat-label">Balance Owed</div><div class="credit-stat-val" style="color:var(--error)">$${owed.toFixed(2)}</div></div>
+        <div class="credit-stat"><div class="credit-stat-label">Credit Limit</div><div class="credit-stat-val">$${limit.toFixed(2)}</div></div>
+        <div class="credit-stat"><div class="credit-stat-label">Available</div><div class="credit-stat-val" style="color:var(--success)">$${avail.toFixed(2)}</div></div>
+      </div>
+      <div class="credit-bar-wrap">
+        <div class="credit-bar-label"><span>Credit Utilization</span><span>${pct}% used</span></div>
+        <div class="credit-bar-track"><div class="credit-bar-fill ${fillClass}" style="width:${pct}%"></div></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="action-btn" onclick="handleCreditPurchase()" style="flex:1;justify-content:center;"><span>💳</span> Make Purchase</button>
+        <button class="action-btn" onclick="handleCreditPayment()" style="flex:1;justify-content:center;"><span>💰</span> Pay Balance</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPortfolioGrid(){
+  const grid=el('portfolioGrid');
+  if(!myInvestments.length){
+    grid.innerHTML='<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--muted);font-size:14px;grid-column:span 2;">No investments yet. Buy your first stock to get started.</div>';
+    return;
+  }
+  grid.innerHTML=myInvestments.map(inv=>{
+    const price=STOCK_PRICES[inv.symbol]||inv.avg_buy_price;
+    const val=(+inv.shares)*price;
+    const cost=(+inv.shares)*(+inv.avg_buy_price);
+    const gain=val-cost;
+    const gainPct=cost>0?((gain/cost)*100).toFixed(2):'0.00';
+    const cls=gain>=0?'up':'down';
+    const gainStr=(gain>=0?'+':'')+gain.toFixed(2);
+    return `<div class="stock-card">
+      <div class="stock-header">
+        <div><div class="stock-symbol">${inv.symbol}</div><div class="stock-name">${inv.name}</div></div>
+        <div class="stock-price"><div class="stock-cur-price">$${price.toFixed(2)}</div><div class="stock-change ${cls}">${gainStr} (${gainPct}%)</div></div>
+      </div>
+      <div class="stock-stats">
+        <div><div class="stock-stat-label">Shares</div><div class="stock-stat-val">${(+inv.shares).toFixed(4)}</div></div>
+        <div><div class="stock-stat-label">Avg Cost</div><div class="stock-stat-val">$${(+inv.avg_buy_price).toFixed(2)}</div></div>
+        <div><div class="stock-stat-label">Value</div><div class="stock-stat-val">$${val.toFixed(2)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLoansPanel(){
+  const cont=el('loansContent');
+  if(!myLoans.length){
+    cont.innerHTML='<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:40px;text-align:center;color:var(--muted);font-size:14px;">No active loans. Apply above to get started.</div>';
+    return;
+  }
+  cont.innerHTML=myLoans.map(loan=>{
+    const pct=Math.round(((+loan.amount-(+loan.remaining))/(+loan.amount))*100);
+    const statusClass=loan.status==='active'?'badge-active':loan.status==='pending'?'badge-pending':'badge-cleared';
+    return `<div class="loan-card">
+      <div class="loan-card-top">
+        <div><div class="loan-type">${loan.type}</div><div class="loan-date">Opened ${fmtDate(loan.created_at)}</div></div>
+        <span class="badge ${statusClass}">${cap(loan.status)}</span>
+      </div>
+      <div class="loan-stats">
+        <div><div class="loan-stat-label">Original Amount</div><div class="loan-stat-val">$${(+loan.amount).toFixed(2)}</div></div>
+        <div><div class="loan-stat-label">Remaining</div><div class="loan-stat-val" style="color:var(--error)">$${(+loan.remaining).toFixed(2)}</div></div>
+        <div><div class="loan-stat-label">Monthly Payment</div><div class="loan-stat-val">$${(+loan.monthly_payment).toFixed(2)}</div></div>
+        <div><div class="loan-stat-label">Interest Rate</div><div class="loan-stat-val">${loan.interest_rate}%</div></div>
+      </div>
+      <div class="loan-progress-track"><div class="loan-progress-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">${pct}% paid off</div>
+      ${loan.status==='active'?`<div class="loan-actions"><button class="loan-action-btn loan-pay-btn" onclick="openLoanPayment('${loan.id}',${loan.remaining},${loan.monthly_payment})">Make Payment</button></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+async function loadTxLists(){
+  try{
+    const sent=await db('GET','transactions',`?from_user_id=eq.${me.id}&order=created_at.desc&limit=30&select=*`);
+    const recv=await db('GET','transactions',`?to_user_id=eq.${me.id}&order=created_at.desc&limit=30&select=*`);
+    const all=[...sent.map(t=>({...t,_dir:'out'})),...recv.map(t=>({...t,_dir:'in'}))].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    const cleared=all.filter(t=>t.status!=='pending_approval');
+    const pending=all.filter(t=>t.status==='pending_approval');
+    const html=arr=>arr.length?arr.slice(0,12).map(txRow).join(''):'<div class="empty-state">No transactions yet.</div>';
+    el('ovTxList').innerHTML=html(cleared);
+    el('ovPendingList').innerHTML=pending.length?pending.map(pendRow).join(''):'<div class="empty-state">No pending transactions.</div>';
+    el('checkTxList').innerHTML=html(cleared);
+    el('savTxList').innerHTML=html(cleared.filter(t=>t.type==='Savings Deposit'||t.type==='Savings Withdrawal'));
+  }catch(e){console.error(e);}
+}
+
+function txRow(t){
+  const isIn=t._dir==='in';
+  const icons={'Welcome Credit':'🎁','Admin Credit':'🏦','Transfer':isIn?'↓':'↑','Savings Deposit':'💰','Savings Withdrawal':'↩','Stock Purchase':'📈','Stock Sale':'📉','Loan Disbursement':'🏦','Loan Payment':'💳','Credit Purchase':'💳','Credit Payment':'✅'};
+  const icon=icons[t.type]||'↔';
+  const amt=(isIn?'+':'-')+'$'+(+t.amount).toFixed(2);
+  const cls=isIn?'tx-credit':'tx-debit';
+  return `<div class="tx-item"><div class="tx-left"><div class="tx-icon">${icon}</div><div><div class="tx-name">${t.type}</div><div class="tx-meta">${fmtDate(t.created_at)}${t.note?' · '+t.note:''}</div></div></div><div class="tx-right"><div class="tx-amount ${cls}">${amt}</div><div class="tx-badge"><span class="badge badge-${t.status}">${fmtStatus(t.status)}</span></div></div></div>`;
+}
+function pendRow(t){
+  const isIn=t._dir==='in';
+  const amt=(isIn?'+':'-')+'$'+(+t.amount).toFixed(2);
+  const cls=isIn?'tx-credit':'tx-debit';
+  return `<div class="tx-item"><div class="tx-left"><div class="tx-icon">⏳</div><div><div class="tx-name">Transfer — Awaiting Admin Approval</div><div class="tx-meta">${fmtDate(t.created_at)}${t.note?' · '+t.note:''}</div></div></div><div class="tx-right"><div class="tx-amount ${cls}">${amt}</div><div class="tx-badge"><span class="badge badge-pending_approval">Pending</span></div></div></div>`;
+}
+
 // ── SEND MONEY ──
-function openSendModal() {
-  ['sendEmail','sendAmount','sendNote'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('sendError').classList.remove('show');
-  document.getElementById('sendWarning').classList.remove('show');
-  document.getElementById('sendModal').classList.add('show');
+function openSendModal(){clearModal('sendModal',['sendEmail','sendAmount','sendNote'],'sendError');el('sendWarning').classList.remove('show');el('sendModal').classList.add('show');}
+function checkSendAmount(){el('sendWarning').classList.toggle('show',(parseFloat(el('sendAmount').value)||0)>=APPROVAL_LIMIT);}
+async function handleSend(){
+  const toEmail=v('sendEmail').toLowerCase(),amount=parseFloat(v('sendAmount')),note=v('sendNote');
+  const err=el('sendError');err.classList.remove('show');
+  if(!toEmail){showErr(err,'Enter a recipient email.');return;}
+  if(!amount||amount<=0){showErr(err,'Enter a valid amount.');return;}
+  if(toEmail===me.email){showErr(err,'Cannot send to yourself.');return;}
+  if(amount>+me.balance){showErr(err,`Insufficient funds. Balance: $${(+me.balance).toFixed(2)}`);return;}
+  load(true,'Processing...');
+  try{
+    const recips=await db('GET','bank_users',`?email=eq.${enc(toEmail)}&select=id,first,last,balance`);
+    if(!recips.length){load(false);showErr(err,'No account found with that email.');return;}
+    const recip=recips[0];
+    const needsApproval=amount>=APPROVAL_LIMIT;
+    const status=needsApproval?'pending_approval':'cleared';
+    await db('POST','transactions','',{from_user_id:me.id,to_user_id:recip.id,type:'Transfer',amount,status,note:note||null});
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance-amount});
+    if(!needsApproval) await db('PATCH','bank_users',`?id=eq.${recip.id}`,{balance:+recip.balance+amount});
+    load(false);closeModal('sendModal');await loadAllUserData();
+    showToast(needsApproval?`$${amount.toFixed(2)} submitted for admin approval.`:`$${amount.toFixed(2)} sent to ${recip.first}.`,'success');
+  }catch(e){load(false);showErr(err,'Transfer failed.');console.error(e);}
 }
-function closeSendModal() { document.getElementById('sendModal').classList.remove('show'); }
-function checkSendAmount() {
-  const a = parseFloat(document.getElementById('sendAmount').value)||0;
-  document.getElementById('sendWarning').classList.toggle('show', a >= APPROVAL_LIMIT);
+
+// ── SAVINGS ──
+function openSavingsDeposit(){clearModal('savDepModal',['savDepAmount'],'savDepError');el('savDepModal').classList.add('show');}
+function openSavingsWithdraw(){clearModal('savWithModal',['savWithAmount'],'savWithError');el('savWithModal').classList.add('show');}
+async function handleSavingsDeposit(){
+  const amount=parseFloat(v('savDepAmount'));
+  const err=el('savDepError');err.classList.remove('show');
+  if(!amount||amount<=0){showErr(err,'Enter a valid amount.');return;}
+  if(amount>+me.balance){showErr(err,`Insufficient checking balance: $${(+me.balance).toFixed(2)}`);return;}
+  load(true,'Depositing...');
+  try{
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance-amount});
+    await db('PATCH','savings_accounts',`?user_id=eq.${me.id}`,{balance:+mySavings.balance+amount});
+    await db('POST','transactions','',{from_user_id:me.id,type:'Savings Deposit',amount,status:'cleared',note:'Transfer to savings'});
+    load(false);closeModal('savDepModal');await loadAllUserData();
+    showToast(`$${amount.toFixed(2)} deposited to savings.`,'success');
+  }catch(e){load(false);showErr(err,'Deposit failed.');console.error(e);}
+}
+async function handleSavingsWithdraw(){
+  const amount=parseFloat(v('savWithAmount'));
+  const err=el('savWithError');err.classList.remove('show');
+  if(!amount||amount<=0){showErr(err,'Enter a valid amount.');return;}
+  if(amount>+mySavings.balance){showErr(err,`Insufficient savings balance: $${(+mySavings.balance).toFixed(2)}`);return;}
+  load(true,'Withdrawing...');
+  try{
+    await db('PATCH','savings_accounts',`?user_id=eq.${me.id}`,{balance:+mySavings.balance-amount});
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance+amount});
+    await db('POST','transactions','',{to_user_id:me.id,type:'Savings Withdrawal',amount,status:'cleared',note:'Transfer from savings'});
+    load(false);closeModal('savWithModal');await loadAllUserData();
+    showToast(`$${amount.toFixed(2)} moved to checking.`,'success');
+  }catch(e){load(false);showErr(err,'Withdrawal failed.');console.error(e);}
 }
 
-async function handleSend() {
-  const toEmail = v('sendEmail').toLowerCase();
-  const amount  = parseFloat(v('sendAmount'));
-  const note    = v('sendNote');
-  const err     = document.getElementById('sendError');
-  err.classList.remove('show');
-
-  if (!toEmail)              { showErr(err,'Please enter a recipient email.'); return; }
-  if (!amount || amount<=0)  { showErr(err,'Please enter a valid amount.'); return; }
-  if (toEmail===me.email)    { showErr(err,'You cannot send money to yourself.'); return; }
-  if (amount > +me.balance)  { showErr(err,`Insufficient funds. Balance: $${(+me.balance).toFixed(2)}`); return; }
-
-  load(true,'Processing transfer...');
-  try {
-    const recips = await db('GET','bank_users',`?email=eq.${enc(toEmail)}&select=id,first,last,balance`);
-    if (!recips.length) { load(false); showErr(err,'No Yepcoin Bank account found with that email.'); return; }
-    const recip = recips[0];
-
-    const needsApproval = amount >= APPROVAL_LIMIT;
-    const status = needsApproval ? 'pending_approval' : 'cleared';
-
-    await db('POST','transactions','',{
-      from_user_id: me.id, to_user_id: recip.id,
-      type:'Transfer', amount, status, note: note||null
-    });
-
-    // Always deduct from sender immediately (funds held until approval or instantly credited)
-    const newSenderBal = +me.balance - amount;
-    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance: newSenderBal});
-    me.balance = newSenderBal;
-
-    if (!needsApproval) {
-      // Credit recipient instantly
-      await db('PATCH','bank_users',`?id=eq.${recip.id}`,{balance: +recip.balance + amount});
-      load(false); closeSendModal(); await loadUserDash();
-      showToast(`$${amount.toFixed(2)} sent to ${recip.first} ${recip.last}.`,'success');
+// ── INVESTING ──
+function openBuyStock(){clearModal('buyStockModal',['buyShares'],'buyStockError');el('buyCostDisplay').textContent='Enter shares to see total cost.';el('buyStockModal').classList.add('show');}
+function calcBuyCost(){
+  const parts=el('buyStockSymbol').value.split('|');
+  const price=parseFloat(parts[2])||0;
+  const shares=parseFloat(el('buyShares').value)||0;
+  const cost=price*shares;
+  el('buyCostDisplay').textContent=shares>0?`Total cost: $${cost.toFixed(2)} (${shares} shares × $${price.toFixed(2)})`:'Enter shares to see total cost.';
+}
+async function handleBuyStock(){
+  const parts=el('buyStockSymbol').value.split('|');
+  const symbol=parts[0],name=parts[1],price=parseFloat(parts[2]);
+  const shares=parseFloat(v('buyShares'));
+  const err=el('buyStockError');err.classList.remove('show');
+  if(!shares||shares<=0){showErr(err,'Enter a valid number of shares.');return;}
+  const cost=price*shares;
+  if(cost>+me.balance){showErr(err,`Insufficient funds. Balance: $${(+me.balance).toFixed(2)}`);return;}
+  load(true,'Buying shares...');
+  try{
+    const existing=myInvestments.find(i=>i.symbol===symbol);
+    if(existing){
+      const newShares=+existing.shares+shares;
+      const newAvg=((+existing.shares*+existing.avg_buy_price)+(shares*price))/newShares;
+      await db('PATCH','investments',`?id=eq.${existing.id}`,{shares:newShares,avg_buy_price:newAvg});
     } else {
-      load(false); closeSendModal(); await loadUserDash();
-      showToast(`Transfer of $${amount.toFixed(2)} submitted — awaiting admin approval.`,'');
+      await db('POST','investments','',{user_id:me.id,symbol,name,shares,avg_buy_price:price});
     }
-  } catch(e) { load(false); showErr(err,'Transfer failed. Please try again.'); console.error(e); }
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance-cost});
+    await db('POST','transactions','',{from_user_id:me.id,type:'Stock Purchase',amount:cost,status:'cleared',note:`Bought ${shares} ${symbol} @ $${price}`});
+    load(false);closeModal('buyStockModal');await loadAllUserData();
+    showToast(`Bought ${shares} ${symbol} for $${cost.toFixed(2)}.`,'success');
+  }catch(e){load(false);showErr(err,'Purchase failed.');console.error(e);}
 }
 
-// ── ADMIN ──
-async function loadAdminData() {
-  try {
-    allCustomers = await db('GET','bank_users','?order=created_at.desc&select=*');
-    const allTx  = await db('GET','transactions','?order=created_at.desc&select=*');
-    const pending = allTx.filter(t=>t.status==='pending_approval');
-    const uMap = {}; allCustomers.forEach(u=>uMap[u.id]=u);
-
-    // Stats
-    document.getElementById('statCustomers').textContent = allCustomers.length;
-    const tot = allCustomers.reduce((s,u)=>s+(+u.balance||0),0);
-    document.getElementById('statDeposits').textContent  = '$'+tot.toFixed(2);
-    document.getElementById('statTx').textContent        = allTx.length;
-    document.getElementById('statPending').textContent   = pending.length;
-    const sub = document.getElementById('statPendingSub');
-    sub.textContent = pending.length ? 'Requires review!' : 'All clear';
-    sub.className   = 'stat-card-sub' + (pending.length ? ' urgent' : '');
-
-    // Alert banner
-    const box = document.getElementById('pendingAlertBox');
-    box.innerHTML = pending.length
-      ? `<div class="pending-alert"><span style="font-size:20px">⚠️</span><div class="pending-alert-text"><strong>${pending.length} transaction${pending.length>1?'s':''} need your approval.</strong> Transfers over $${APPROVAL_LIMIT.toLocaleString()} are held until reviewed. <button class="form-switch-link" style="color:inherit;text-decoration:underline;" onclick="setTabByName('approvals')">Review now →</button></div></div>`
-      : '';
-
-    // Sidebar badge
-    const badge = document.getElementById('approvalBadge');
-    badge.textContent = pending.length;
-    badge.style.display = pending.length ? '' : 'none';
-
-    // Recent regs
-    const rrb = document.getElementById('recentRegBody');
-    rrb.innerHTML = allCustomers.slice(0,5).map(u=>`
-      <tr>
-        <td><strong>${u.first} ${u.last}</strong></td>
-        <td>${u.email}</td>
-        <td>${u.account_type}</td>
-        <td style="font-weight:600">$${(+u.balance).toFixed(2)}</td>
-        <td><span class="badge badge-${u.status}">${cap(u.status)}</span></td>
-        <td>${fmtDate(u.created_at)}</td>
-      </tr>`).join('') ||
-      '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No customers yet.</td></tr>';
-
-    // Approvals tab
-    const ab = document.getElementById('approvalsBody');
-    ab.innerHTML = pending.length ? pending.map(t=>{
-      const from = t.from_user_id ? (uMap[t.from_user_id]?`${uMap[t.from_user_id].first} ${uMap[t.from_user_id].last}`:'Unknown') : '—';
-      const to   = t.to_user_id   ? (uMap[t.to_user_id]  ?`${uMap[t.to_user_id].first} ${uMap[t.to_user_id].last}`  :'Unknown') : '—';
-      return `<tr>
-        <td>${from}</td><td>${to}</td>
-        <td style="font-weight:700;color:var(--navy)">$${(+t.amount).toFixed(2)}</td>
-        <td>${t.note||'—'}</td><td>${fmtDate(t.created_at)}</td>
-        <td>
-          <button class="table-action green" onclick="approveT('${t.id}','${t.to_user_id}',${t.amount})">✓ Approve</button>
-          <button class="table-action danger" onclick="rejectT('${t.id}','${t.from_user_id}',${t.amount})">✕ Reject</button>
-        </td>
-      </tr>`;
-    }).join('')
-    : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No pending approvals — all clear!</td></tr>';
-
-    // Customers tab
-    renderCustomers(allCustomers);
-
-    // All transactions
-    const atb = document.getElementById('allTxBody');
-    atb.innerHTML = allTx.length ? allTx.map(t=>{
-      const from = t.from_user_id?(uMap[t.from_user_id]?`${uMap[t.from_user_id].first} ${uMap[t.from_user_id].last}`:'Unknown'):'—';
-      const to   = t.to_user_id  ?(uMap[t.to_user_id]  ?`${uMap[t.to_user_id].first} ${uMap[t.to_user_id].last}`  :'Unknown'):'—';
-      return `<tr>
-        <td>${from}</td><td>${to}</td><td>${t.type}</td>
-        <td style="font-weight:600">$${(+t.amount).toFixed(2)}</td>
-        <td><span class="badge badge-${t.status}">${fmtStatus(t.status)}</span></td>
-        <td>${t.note||'—'}</td><td>${fmtDate(t.created_at)}</td>
-      </tr>`;
-    }).join('')
-    : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No transactions yet.</td></tr>';
-
-  } catch(e) { console.error(e); showToast('Error loading data.','error'); }
+function openSellStock(){
+  clearModal('sellStockModal',['sellShares'],'sellStockError');
+  el('sellProceedsDisplay').textContent='Enter shares to see proceeds.';
+  const sel=el('sellStockSelect');
+  sel.innerHTML=myInvestments.length?myInvestments.map(i=>`<option value="${i.symbol}|${i.id}|${i.shares}">${i.symbol} — ${(+i.shares).toFixed(4)} shares</option>`).join(''):'<option>No positions</option>';
+  el('sellStockModal').classList.add('show');
+}
+function calcSellProceeds(){
+  const parts=el('sellStockSelect').value.split('|');
+  const symbol=parts[0];
+  const price=STOCK_PRICES[symbol]||0;
+  const shares=parseFloat(el('sellShares').value)||0;
+  el('sellProceedsDisplay').textContent=shares>0?`Proceeds: $${(price*shares).toFixed(2)} (${shares} shares × $${price.toFixed(2)})`:'Enter shares to see proceeds.';
+}
+async function handleSellStock(){
+  const parts=el('sellStockSelect').value.split('|');
+  const symbol=parts[0],invId=parts[1],maxShares=parseFloat(parts[2]);
+  const shares=parseFloat(v('sellShares'));
+  const err=el('sellStockError');err.classList.remove('show');
+  if(!shares||shares<=0){showErr(err,'Enter a valid number of shares.');return;}
+  if(shares>maxShares){showErr(err,`You only have ${maxShares.toFixed(4)} shares.`);return;}
+  const price=STOCK_PRICES[symbol]||0;
+  const proceeds=price*shares;
+  load(true,'Selling shares...');
+  try{
+    const inv=myInvestments.find(i=>i.id===invId);
+    const newShares=+inv.shares-shares;
+    if(newShares<0.0001){
+      await db('DELETE','investments',`?id=eq.${invId}`);
+    } else {
+      await db('PATCH','investments',`?id=eq.${invId}`,{shares:newShares});
+    }
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance+proceeds});
+    await db('POST','transactions','',{to_user_id:me.id,type:'Stock Sale',amount:proceeds,status:'cleared',note:`Sold ${shares} ${symbol} @ $${price}`});
+    load(false);closeModal('sellStockModal');await loadAllUserData();
+    showToast(`Sold ${shares} ${symbol} for $${proceeds.toFixed(2)}.`,'success');
+  }catch(e){load(false);showErr(err,'Sale failed.');console.error(e);}
 }
 
-function renderCustomers(list) {
-  const body  = document.getElementById('customersBody');
-  const label = document.getElementById('userCountLabel');
-  if (label) label.textContent = list.length + ' customer' + (list.length!==1?'s':'');
-  body.innerHTML = list.length ? list.map(u=>`
-    <tr>
-      <td><strong>${u.first} ${u.last}</strong></td>
-      <td>${u.email}</td>
-      <td>${u.account_type}</td>
-      <td style="font-weight:700">$${(+u.balance).toFixed(2)}</td>
-      <td><span class="badge badge-${u.status}">${cap(u.status)}</span></td>
-      <td>
-        <button class="table-action green" onclick="openCreditModal('${u.id}','${u.first} ${u.last}')">+ Credit</button>
-        <button class="table-action" onclick="toggleStatus('${u.id}','${u.status}')">${u.status==='active'?'Suspend':'Activate'}</button>
-        <button class="table-action danger" onclick="delCustomer('${u.id}','${u.first} ${u.last}')">Delete</button>
-      </td>
-    </tr>`).join('')
-  : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No customers yet.</td></tr>';
+// ── CREDIT CARD ──
+async function applyForCard(){
+  load(true,'Processing application...');
+  try{
+    const due=new Date();due.setDate(due.getDate()+30);
+    const card=(await db('POST','credit_cards','',{user_id:me.id,credit_limit:2000,balance_owed:0,due_date:due.toISOString().split('T')[0],status:'active'}))[0];
+    myCard=card;
+    await db('POST','transactions','',{to_user_id:me.id,type:'Credit Card Issued',amount:0,status:'cleared',note:'Yepcoin Platinum Card approved'});
+    load(false);await loadAllUserData();
+    showToast('Credit card approved! $2,000 limit.','success');
+  }catch(e){load(false);showToast('Application failed.','error');console.error(e);}
+}
+async function handleCreditPurchase(){
+  const amt=parseFloat(prompt('Purchase amount ($):'));
+  if(!amt||amt<=0){return;}
+  const avail=+myCard.credit_limit-+myCard.balance_owed;
+  if(amt>avail){showToast(`Exceeds available credit: $${avail.toFixed(2)}`,'error');return;}
+  load(true,'Processing...');
+  try{
+    await db('PATCH','credit_cards',`?id=eq.${myCard.id}`,{balance_owed:+myCard.balance_owed+amt});
+    await db('POST','transactions','',{from_user_id:me.id,type:'Credit Purchase',amount:amt,status:'cleared',note:'Credit card purchase'});
+    load(false);await loadAllUserData();showToast(`$${amt.toFixed(2)} charged to credit card.`,'');
+  }catch(e){load(false);showToast('Failed.','error');}
+}
+async function handleCreditPayment(){
+  const amt=parseFloat(prompt(`Pay toward balance (owed: $${(+myCard.balance_owed).toFixed(2)}):`));
+  if(!amt||amt<=0)return;
+  if(amt>+me.balance){showToast('Insufficient checking balance.','error');return;}
+  if(amt>+myCard.balance_owed){showToast('Payment exceeds balance owed.','error');return;}
+  load(true,'Processing payment...');
+  try{
+    await db('PATCH','credit_cards',`?id=eq.${myCard.id}`,{balance_owed:+myCard.balance_owed-amt});
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance-amt});
+    await db('POST','transactions','',{from_user_id:me.id,type:'Credit Payment',amount:amt,status:'cleared',note:'Credit card payment'});
+    load(false);await loadAllUserData();showToast(`$${amt.toFixed(2)} payment applied.`,'success');
+  }catch(e){load(false);showToast('Failed.','error');}
 }
 
-function filterCustomers() {
-  const q = document.getElementById('userSearch').value.toLowerCase();
-  renderCustomers(allCustomers.filter(u=>
-    `${u.first} ${u.last}`.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
-  ));
+// ── LOANS ──
+function openLoanApply(){clearModal('loanModal',['loanAmount'],'loanError');el('loanPayDisplay').textContent='Enter an amount to see your monthly payment.';el('loanModal').classList.add('show');}
+function calcLoanPayment(){
+  const amt=parseFloat(el('loanAmount').value)||0;
+  const term=parseInt(el('loanTerm').value)||12;
+  const rateMap={'Personal Loan':6.49,'Auto Loan':5.99,'Home Equity':7.25,'Student Loan':4.99};
+  const type=el('loanType').value;
+  const rate=(rateMap[type]||6.49)/100/12;
+  if(amt>0){
+    const pay=rate>0?(amt*rate*Math.pow(1+rate,term))/(Math.pow(1+rate,term)-1):amt/term;
+    el('loanPayDisplay').textContent=`Estimated monthly payment: $${pay.toFixed(2)} for ${term} months`;
+  }
+}
+async function handleLoanApply(){
+  const type=el('loanType').value,amt=parseFloat(v('loanAmount')),term=parseInt(el('loanTerm').value);
+  const err=el('loanError');err.classList.remove('show');
+  if(!amt||amt<100){showErr(err,'Minimum loan amount is $100.');return;}
+  const rateMap={'Personal Loan':6.49,'Auto Loan':5.99,'Home Equity':7.25,'Student Loan':4.99};
+  const rate=(rateMap[type]||6.49)/100/12;
+  const pay=rate>0?(amt*rate*Math.pow(1+rate,term))/(Math.pow(1+rate,term)-1):amt/term;
+  load(true,'Submitting application...');
+  try{
+    const loan=(await db('POST','loans','',{user_id:me.id,type,amount:amt,remaining:amt,monthly_payment:pay.toFixed(2),interest_rate:rateMap[type]||6.49,status:'active'}))[0];
+    // Disburse to checking
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance+amt});
+    await db('POST','transactions','',{to_user_id:me.id,type:'Loan Disbursement',amount:amt,status:'cleared',note:`${type} approved`});
+    load(false);closeModal('loanModal');await loadAllUserData();
+    showToast(`${type} of $${amt.toFixed(2)} approved & deposited.`,'success');
+  }catch(e){load(false);showErr(err,'Application failed.');console.error(e);}
+}
+function openLoanPayment(loanId,remaining,monthly){
+  loanPayTargetId=loanId;loanPayTargetRemaining=remaining;
+  el('loanPayDesc').textContent=`Remaining balance: $${(+remaining).toFixed(2)}. Monthly payment: $${(+monthly).toFixed(2)}.`;
+  el('loanPayAmount').value='';
+  el('loanPayError').classList.remove('show');
+  el('loanPayModal').classList.add('show');
+}
+async function handleLoanPayment(){
+  const amt=parseFloat(v('loanPayAmount'));
+  const err=el('loanPayError');err.classList.remove('show');
+  if(!amt||amt<=0){showErr(err,'Enter a valid amount.');return;}
+  if(amt>+me.balance){showErr(err,`Insufficient checking balance: $${(+me.balance).toFixed(2)}`);return;}
+  if(amt>loanPayTargetRemaining){showErr(err,`Payment exceeds remaining balance: $${(+loanPayTargetRemaining).toFixed(2)}`);return;}
+  load(true,'Processing payment...');
+  try{
+    const newRemaining=+loanPayTargetRemaining-amt;
+    const newStatus=newRemaining<=0?'paid_off':'active';
+    await db('PATCH','loans',`?id=eq.${loanPayTargetId}`,{remaining:newRemaining,status:newStatus});
+    await db('PATCH','bank_users',`?id=eq.${me.id}`,{balance:+me.balance-amt});
+    await db('POST','transactions','',{from_user_id:me.id,type:'Loan Payment',amount:amt,status:'cleared',note:'Loan payment'});
+    load(false);closeModal('loanPayModal');await loadAllUserData();
+    showToast(newStatus==='paid_off'?'Loan fully paid off! 🎉':`$${amt.toFixed(2)} loan payment made.`,'success');
+  }catch(e){load(false);showErr(err,'Payment failed.');console.error(e);}
 }
 
 // ── APPROVE / REJECT ──
-async function approveT(txId, toId, amount) {
+async function approveT(txId,toId,amount){
   load(true,'Approving...');
-  try {
-    const recip = await db('GET','bank_users',`?id=eq.${toId}&select=balance`);
-    if (recip.length) await db('PATCH','bank_users',`?id=eq.${toId}`,{balance: +recip[0].balance + +amount});
+  try{
+    const recip=await db('GET','bank_users',`?id=eq.${toId}&select=balance`);
+    if(recip.length) await db('PATCH','bank_users',`?id=eq.${toId}`,{balance:+recip[0].balance+(+amount)});
     await db('PATCH','transactions',`?id=eq.${txId}`,{status:'approved'});
-    load(false);
-    showToast(`Approved. $${(+amount).toFixed(2)} credited to recipient.`,'success');
-    await loadAdminData();
-  } catch(e) { load(false); showToast('Approve failed.','error'); console.error(e); }
+    load(false);showToast(`Approved. $${(+amount).toFixed(2)} credited.`,'success');await loadAdminData();
+  }catch(e){load(false);showToast('Failed.','error');}
 }
-
-async function rejectT(txId, fromId, amount) {
+async function rejectT(txId,fromId,amount){
   load(true,'Rejecting...');
-  try {
-    // Refund sender
-    const sender = await db('GET','bank_users',`?id=eq.${fromId}&select=balance`);
-    if (sender.length) await db('PATCH','bank_users',`?id=eq.${fromId}`,{balance: +sender[0].balance + +amount});
+  try{
+    const sender=await db('GET','bank_users',`?id=eq.${fromId}&select=balance`);
+    if(sender.length) await db('PATCH','bank_users',`?id=eq.${fromId}`,{balance:+sender[0].balance+(+amount)});
     await db('PATCH','transactions',`?id=eq.${txId}`,{status:'rejected'});
-    load(false);
-    showToast(`Rejected. $${(+amount).toFixed(2)} refunded to sender.`,'error');
-    await loadAdminData();
-  } catch(e) { load(false); showToast('Reject failed.','error'); console.error(e); }
+    load(false);showToast(`Rejected. $${(+amount).toFixed(2)} refunded.`,'error');await loadAdminData();
+  }catch(e){load(false);showToast('Failed.','error');}
 }
 
-// ── CREDIT ──
-function openCreditModal(id, name) {
-  creditUserId = id;
-  document.getElementById('creditDesc').textContent = `Add funds directly to ${name}'s account.`;
-  document.getElementById('creditAmount').value = '';
-  document.getElementById('creditNote').value   = '';
-  document.getElementById('creditModal').classList.add('show');
-}
-function closeCreditModal() { document.getElementById('creditModal').classList.remove('show'); creditUserId=null; }
-
-async function handleCredit() {
-  const amount = parseFloat(document.getElementById('creditAmount').value);
-  const note   = document.getElementById('creditNote').value.trim();
-  if (!amount||amount<=0) { showToast('Enter a valid amount.','error'); return; }
-  load(true,'Crediting account...');
-  try {
-    const u = await db('GET','bank_users',`?id=eq.${creditUserId}&select=balance,first,last`);
-    if (!u.length) throw new Error('User not found');
-    await db('PATCH','bank_users',`?id=eq.${creditUserId}`,{balance: +u[0].balance + amount});
-    await db('POST','transactions','',{
-      to_user_id: creditUserId, type:'Admin Credit',
-      amount, status:'cleared', note: note||'Admin credit'
-    });
-    load(false); closeCreditModal();
-    showToast(`$${amount.toFixed(2)} credited to ${u[0].first} ${u[0].last}.`,'success');
-    await loadAdminData();
-  } catch(e) { load(false); showToast('Credit failed.','error'); console.error(e); }
+// ── ADMIN CREDIT ──
+function openCreditModal(id,name){creditUserId=id;el('creditDesc').textContent=`Add funds to ${name}'s checking account.`;el('creditAmount').value='';el('creditNote').value='';el('creditModal').classList.add('show');}
+async function handleCredit(){
+  const amount=parseFloat(el('creditAmount').value),note=el('creditNote').value.trim();
+  if(!amount||amount<=0){showToast('Enter a valid amount.','error');return;}
+  load(true,'Crediting...');
+  try{
+    const u=await db('GET','bank_users',`?id=eq.${creditUserId}&select=balance,first,last`);
+    if(!u.length)throw new Error('User not found');
+    await db('PATCH','bank_users',`?id=eq.${creditUserId}`,{balance:+u[0].balance+amount});
+    await db('POST','transactions','',{to_user_id:creditUserId,type:'Admin Credit',amount,status:'cleared',note:note||'Admin credit'});
+    load(false);closeModal('creditModal');showToast(`$${amount.toFixed(2)} credited to ${u[0].first}.`,'success');await loadAdminData();
+  }catch(e){load(false);showToast('Credit failed.','error');}
 }
 
-// ── STATUS / DELETE ──
-async function toggleStatus(id, cur) {
-  const s = cur==='active'?'suspended':'active';
+// ── ADMIN STATUS / DELETE ──
+async function toggleStatus(id,cur){
+  const s=cur==='active'?'suspended':'active';
   load(true,'Updating...');
-  try {
-    await db('PATCH','bank_users',`?id=eq.${id}`,{status:s});
-    load(false); showToast(`Account ${s}.`,s==='active'?'success':'error');
-    await loadAdminData();
-  } catch(e) { load(false); showToast('Update failed.','error'); }
+  try{await db('PATCH','bank_users',`?id=eq.${id}`,{status:s});load(false);showToast(`Account ${s}.`,s==='active'?'success':'error');await loadAdminData();}
+  catch(e){load(false);showToast('Failed.','error');}
 }
-
-async function delCustomer(id, name) {
-  if (!confirm(`Permanently delete ${name}'s account and all their transaction records? This cannot be undone.`)) return;
+async function delCustomer(id,name){
+  if(!confirm(`Delete ${name}? Cannot be undone.`))return;
   load(true,'Deleting...');
-  try {
+  try{
     await db('DELETE','transactions',`?or=(from_user_id.eq.${id},to_user_id.eq.${id})`);
+    await db('DELETE','savings_accounts',`?user_id=eq.${id}`);
+    await db('DELETE','credit_cards',`?user_id=eq.${id}`);
+    await db('DELETE','loans',`?user_id=eq.${id}`);
+    await db('DELETE','investments',`?user_id=eq.${id}`);
     await db('DELETE','bank_users',`?id=eq.${id}`);
-    load(false); showToast(`${name} deleted.`,'error');
-    await loadAdminData();
-  } catch(e) { load(false); showToast('Delete failed.','error'); console.error(e); }
+    load(false);showToast(`${name} deleted.`,'error');await loadAdminData();
+  }catch(e){load(false);showToast('Delete failed.','error');console.error(e);}
+}
+async function approveLoan(id,userId,amount){
+  load(true,'Approving loan...');
+  try{
+    await db('PATCH','loans',`?id=eq.${id}`,{status:'active'});
+    const u=await db('GET','bank_users',`?id=eq.${userId}&select=balance`);
+    if(u.length) await db('PATCH','bank_users',`?id=eq.${userId}`,{balance:+u[0].balance+amount});
+    await db('POST','transactions','',{to_user_id:userId,type:'Loan Disbursement',amount,status:'cleared',note:'Loan approved by admin'});
+    load(false);showToast('Loan approved.','success');await loadAdminData();
+  }catch(e){load(false);showToast('Failed.','error');}
+}
+async function rejectLoan(id){
+  load(true,'Rejecting...');
+  try{await db('PATCH','loans',`?id=eq.${id}`,{status:'rejected'});load(false);showToast('Loan rejected.','error');await loadAdminData();}
+  catch(e){load(false);showToast('Failed.','error');}
 }
 
-// ── LOGOUT ──
-function handleLogout() {
-  me = null; allCustomers = [];
-  document.getElementById('loginEmail').value = '';
-  document.getElementById('loginPassword').value = '';
-  document.getElementById('loginError').classList.remove('show');
-  showPage('loginPage');
+// ── ADMIN DATA ──
+async function loadAdminData(){
+  try{
+    allCustomers=await db('GET','bank_users','?order=created_at.desc&select=*');
+    const allTx=await db('GET','transactions','?order=created_at.desc&select=*');
+    const allSav=await db('GET','savings_accounts','?select=*');
+    const allLoans=await db('GET','loans','?order=created_at.desc&select=*');
+    const pending=allTx.filter(t=>t.status==='pending_approval');
+    const uMap={};allCustomers.forEach(u=>uMap[u.id]=u);
+    const savMap={};allSav.forEach(s=>savMap[s.user_id]=s);
+
+    el('statCustomers').textContent=allCustomers.length;
+    const totCheck=allCustomers.reduce((s,u)=>s+(+u.balance||0),0);
+    const totSav=allSav.reduce((s,a)=>s+(+a.balance||0),0);
+    el('statDeposits').textContent='$'+(totCheck+totSav).toFixed(2);
+    el('statTx').textContent=allTx.length;
+    el('statPending').textContent=pending.length;
+    const sub=el('statPendingSub');sub.textContent=pending.length?'Requires review!':'All clear';
+    sub.className='stat-card-sub'+(pending.length?' urgent':'');
+
+    el('pendingAlertBox').innerHTML=pending.length?`<div class="pending-alert"><span style="font-size:20px">⚠️</span><div class="pending-alert-text"><strong>${pending.length} transfer${pending.length>1?'s':''} need approval.</strong> <button class="form-switch-link" style="color:inherit;text-decoration:underline" onclick="setTabByName('approvals')">Review now →</button></div></div>`:'';
+    const badge=el('approvalBadge');badge.textContent=pending.length;badge.style.display=pending.length?'':'none';
+
+    el('recentRegBody').innerHTML=allCustomers.slice(0,5).map(u=>`<tr><td><strong>${u.first} ${u.last}</strong></td><td>${u.email}</td><td>$${(+u.balance).toFixed(2)}</td><td>$${(+(savMap[u.id]||{balance:0}).balance).toFixed(2)}</td><td><span class="badge badge-${u.status}">${cap(u.status)}</span></td><td>${fmtDate(u.created_at)}</td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No customers yet.</td></tr>';
+
+    el('approvalsBody').innerHTML=pending.length?pending.map(t=>{
+      const from=t.from_user_id?(uMap[t.from_user_id]?`${uMap[t.from_user_id].first} ${uMap[t.from_user_id].last}`:'Unknown'):'—';
+      const to=t.to_user_id?(uMap[t.to_user_id]?`${uMap[t.to_user_id].first} ${uMap[t.to_user_id].last}`:'Unknown'):'—';
+      return `<tr><td>${from}</td><td>${to}</td><td style="font-weight:700;color:var(--navy)">$${(+t.amount).toFixed(2)}</td><td>${t.note||'—'}</td><td>${fmtDate(t.created_at)}</td><td><button class="table-action green" onclick="approveT('${t.id}','${t.to_user_id}',${t.amount})">✓ Approve</button><button class="table-action danger" onclick="rejectT('${t.id}','${t.from_user_id}',${t.amount})">✕ Reject</button></td></tr>`;
+    }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No pending approvals.</td></tr>';
+
+    renderCustomers(allCustomers,savMap);
+
+    el('allTxBody').innerHTML=allTx.length?allTx.map(t=>{
+      const from=t.from_user_id?(uMap[t.from_user_id]?`${uMap[t.from_user_id].first} ${uMap[t.from_user_id].last}`:'Unknown'):'—';
+      const to=t.to_user_id?(uMap[t.to_user_id]?`${uMap[t.to_user_id].first} ${uMap[t.to_user_id].last}`:'Unknown'):'—';
+      return `<tr><td>${from}</td><td>${to}</td><td>${t.type}</td><td style="font-weight:600">$${(+t.amount).toFixed(2)}</td><td><span class="badge badge-${t.status}">${fmtStatus(t.status)}</span></td><td>${t.note||'—'}</td><td>${fmtDate(t.created_at)}</td></tr>`;
+    }).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No transactions yet.</td></tr>';
+
+    el('loansAdminBody').innerHTML=allLoans.length?allLoans.map(loan=>{
+      const u=uMap[loan.user_id];const name=u?`${u.first} ${u.last}`:'Unknown';
+      const statusClass=loan.status==='active'?'badge-active':loan.status==='pending'?'badge-pending':loan.status==='paid_off'?'badge-cleared':'badge-rejected';
+      return `<tr><td>${name}</td><td>${loan.type}</td><td>$${(+loan.amount).toFixed(2)}</td><td>$${(+loan.remaining).toFixed(2)}</td><td>${loan.interest_rate}%</td><td><span class="badge ${statusClass}">${cap(loan.status)}</span></td><td>${loan.status==='pending'?`<button class="table-action green" onclick="approveLoan('${loan.id}','${loan.user_id}',${loan.amount})">Approve</button><button class="table-action danger" onclick="rejectLoan('${loan.id}')">Reject</button>`:'<button class="table-action">View</button>'}</td></tr>`;
+    }).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">No loans yet.</td></tr>';
+
+    _savMap=savMap;
+  }catch(e){console.error(e);showToast('Error loading data.','error');}
+}
+
+let _savMap={};
+function renderCustomers(list,savMap){
+  savMap=savMap||_savMap;
+  const body=el('customersBody'),label=el('userCountLabel');
+  if(label) label.textContent=list.length+' customer'+(list.length!==1?'s':'');
+  body.innerHTML=list.length?list.map(u=>`<tr><td><strong>${u.first} ${u.last}</strong></td><td>${u.email}</td><td style="font-weight:700">$${(+u.balance).toFixed(2)}</td><td>$${(+(savMap[u.id]||{balance:0}).balance).toFixed(2)}</td><td><span class="badge badge-${u.status}">${cap(u.status)}</span></td><td><button class="table-action green" onclick="openCreditModal('${u.id}','${u.first} ${u.last}')">+ Credit</button><button class="table-action" onclick="toggleStatus('${u.id}','${u.status}')">${u.status==='active'?'Suspend':'Activate'}</button><button class="table-action danger" onclick="delCustomer('${u.id}','${u.first} ${u.last}')">Delete</button></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">No customers yet.</td></tr>';
+}
+function filterCustomers(){
+  const q=el('userSearch').value.toLowerCase();
+  renderCustomers(allCustomers.filter(u=>`${u.first} ${u.last}`.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)));
 }
 
 // ── TABS ──
-function setTab(btn, name) {
-  document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.admin-tab-content').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-}
-function setTabByName(name) {
-  const b = [...document.querySelectorAll('.sidebar-item')].find(b=>b.getAttribute('onclick')?.includes("'"+name+"'"));
-  if (b) setTab(b, name);
-}
+function switchTab(btn,name){document.querySelectorAll('.acc-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));el('panel-'+name).classList.add('active');}
+function switchTabByName(name){const b=[...document.querySelectorAll('.acc-tab')].find(b=>b.getAttribute('onclick')?.includes("'"+name+"'"));if(b)switchTab(b,name);}
+function setTab(btn,name){document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.admin-tab-content').forEach(t=>t.classList.remove('active'));el('tab-'+name).classList.add('active');}
+function setTabByName(name){const b=[...document.querySelectorAll('.sidebar-item')].find(b=>b.getAttribute('onclick')?.includes("'"+name+"'"));if(b)setTab(b,name);}
 
-// ── MODAL CLOSE ON BG CLICK ──
-['sendModal','creditModal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => { if (e.target.id===id) document.getElementById(id).classList.remove('show'); });
-});
+// ── MODAL ──
+function closeModal(id){el(id).classList.remove('show');}
+function clearModal(id,fields,errId){fields.forEach(f=>el(f).value='');if(errId)el(errId).classList.remove('show');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');}));
+
+// ── LOGOUT ──
+function handleLogout(){me=null;allCustomers=[];el('loginEmail').value='';el('loginPassword').value='';el('loginError').classList.remove('show');showPage('loginPage');}
 
 // ── TOAST ──
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.className = 'toast show' + (type?' '+type:'');
-  document.getElementById('toastMsg').textContent = msg;
-  clearTimeout(t._t);
-  t._t = setTimeout(()=>t.classList.remove('show'), 3500);
-}
+function showToast(msg,type=''){const t=el('toast');t.className='toast show'+(type?' '+type:'');el('toastMsg').textContent=msg;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3500);}
 
 // ── UTILS ──
-function showErr(el, msg) { el.textContent=msg; el.classList.add('show'); }
-function v(id) { return document.getElementById(id).value.trim(); }
-function enc(s) { return encodeURIComponent(s); }
-function cap(s) { return s?s[0].toUpperCase()+s.slice(1):''; }
-function fmtDate(d) {
-  if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-function fmtStatus(s) {
-  return {cleared:'Cleared',pending_approval:'Pending',approved:'Approved',rejected:'Rejected'}[s]||cap(s);
-}
+function el(id){return document.getElementById(id);}
+function v(id){return el(id).value.trim();}
+function enc(s){return encodeURIComponent(s);}
+function cap(s){return s?s[0].toUpperCase()+s.slice(1).replace('_',' '):''}
+function showErr(el,msg){el.textContent=msg;el.classList.add('show');}
+function fmtDate(d){return d?new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';}
+function fmtStatus(s){return{cleared:'Cleared',pending_approval:'Pending',approved:'Approved',rejected:'Rejected',paid_off:'Paid Off',active:'Active'}[s]||cap(s);}
 
-// Enter key on login
-['loginEmail','loginPassword'].forEach(id=>
-  document.getElementById(id).addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); })
-);
+['loginEmail','loginPassword'].forEach(id=>el(id).addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin();}));
 
-// Auto-route based on URL param
-(function() {
-  const p = new URLSearchParams(window.location.search).get('page');
-  if (p === 'register') showPage('registerPage');
-})();
+(function(){const p=new URLSearchParams(window.location.search).get('page');if(p==='register')showPage('registerPage');})();
 </script>
 </body>
 </html>
