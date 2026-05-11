@@ -1107,6 +1107,15 @@ function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 // Enter key on login
 document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+// ── HASH ROUTING: support #register and #login deep-links from external pages ──
+(function() {
+  const hash = window.location.hash;
+  if (hash === '#register') {
+    showPage('registerPage');
+  }
+  // #login or no hash defaults to loginPage (already active)
+})();
 </script>
 </body>
 </html>
